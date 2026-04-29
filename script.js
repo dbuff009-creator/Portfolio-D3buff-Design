@@ -54,7 +54,7 @@ const translations = {
     email: 'Email', emailHint: 'Написать письмо',
     status: 'Статус', statusValue: 'Открыт к заказам', statusHint: 'Готов взяться за проект',
     allWorks: 'Все работы →',
-    footer: '© 2026 D3buff. Все права защищены. <p>Отдельная благодарность <span style="color:rgba(255,255,255,0.75);font-weight:300;">Kiro AI</span> <span style="font-weight: 900; margin: 6px;"> · </span> Сайт был за 3 дня</p>',
+    footer: '© 2026 D3buff. Все права защищены. <p>Отдельная благодарность <span style="color:rgba(255,255,255,0.75);font-weight:300;">Kiro AI</span> <span style="font-weight: 900; margin: 6px;"> · </span> Сайт был сделан за 3 дня</p>',
     expert: 'Эксперт', intermediate: 'Средний', basic: 'Базовый', advanced: 'Продвинутый', low: 'Низкий',
     wbTitle: 'Инфографика для платформы <span style="color: #e02020;">Wildberries</span>',
     scrollTop: 'Наверх'
