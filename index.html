@@ -5,7 +5,17 @@
     <link rel="icon" type="image/png" href="images/logo.png">
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#e02020" />
+  <meta name="description" content="Портфолио D3buff - дизайнера и разработчика" />
+  <meta property="og:title" content="D3buff — Portfolio" />
+  <meta property="og:description" content="Портфолио дизайнера и разработчика" />
+  <meta property="og:image" content="images/logo.png" />
+  <meta property="og:type" content="website" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="images/logo.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>D3buff — Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -42,6 +52,11 @@
         <a href="#works">Работы</a>
         <a href="#contact">Контакт</a>
       </nav>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Открыть меню">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <div class="header-controls">
         <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
           <svg class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -313,7 +328,7 @@
   <!-- FOOTER -->
   <footer class="footer">
     <div class="container footer__inner">
-      <span>© 2026 D3buff. Все права защищены. <p>Отдельная благодарность <span style="color:rgba(255,255,255,0.75);font-weight:300;">Kiro AI</span> <span style="font-weight: 900; margin: 6px;"> · </span> Сайт был сделан за 3 дня</p></span>
+      <span>© 2026 D3buff. Все права защищены. <p>Отдельная благодарность <span style="color:rgba(255,255,255,0.75);font-weight:300;">Kiro AI</span> <span style="font-weight: 900; margin: 6px;"> · </span> Сайт был за 3 дня</p></span>
     </div>
   </footer>
 
@@ -334,6 +349,7 @@
     </div>
   </div>
 
+  <script src="optimize.js" defer></script>
   <script src="script.js"></script>
 </body>
 </html>
