@@ -489,11 +489,9 @@ function createItem(work, index) {
   div.dataset.src = work.src;
   div.dataset.title = work.title;
   const img = document.createElement('img');
-  img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"%3E%3Crect width="300" height="200" fill="%23f0f0f0"/%3E%3C/svg%3E';
-  img.dataset.src = work.src;
+  img.src = work.src;
   img.alt = work.title;
   img.loading = 'lazy';
-  img.className = 'lazy-image';
   div.appendChild(img);
   div.addEventListener('click', () => openLightbox(work.src, work.title));
   return div;
@@ -534,51 +532,6 @@ if (jobsMainGrid) {
   initReveal();
 }
 
-// Ленивая загрузка изображений
-function initLazyLoading() {
-  const lazyImages = document.querySelectorAll('img.lazy-image');
-  
-  if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          img.src = img.dataset.src;
-          img.classList.add('loaded');
-          imageObserver.unobserve(img);
-        }
-      });
-    }, {
-      rootMargin: '50px 0px',
-      threshold: 0.1
-    });
-    
-    lazyImages.forEach(img => imageObserver.observe(img));
-  } else {
-    // Fallback для старых браузеров
-    lazyImages.forEach(img => {
-      img.src = img.dataset.src;
-      img.classList.add('loaded');
-    });
-  }
-}
-
-// Предзагрузка критических изображений
-function preloadCriticalImages() {
-  const criticalImages = [
-    'images/Xorek.png',
-    'images/Xorek_panic.png',
-    'images/Cursor.png',
-    'images/Pointer.png',
-    'images/gif.gif'
-  ];
-  
-  criticalImages.forEach(src => {
-    const img = new Image();
-    img.src = src;
-  });
-}
-
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 const lightboxTitle = document.getElementById('lightboxTitle');
@@ -591,191 +544,14 @@ function openLightbox(src, title) {
   lightboxTitle.textContent = title;
   lightbox.classList.add('open');
   document.body.style.overflow = 'hidden';
-  
-  // Добавляем анимацию появления
-  setTimeout(() => {
-    lightboxImg.style.transform = 'scale(1)';
-    lightboxImg.style.opacity = '1';
-  }, 10);
 }
 
 function closeLightbox() {
-  lightboxImg.style.transform = 'scale(0.95)';
-  lightboxImg.style.opacity = '0';
-  
-  setTimeout(() => {
-    lightbox.classList.remove('open');
-    document.body.style.overflow = '';
-    lightboxImg.src = '';
-    lightboxImg.style.transform = '';
-    lightboxImg.style.opacity = '';
-  }, 300);
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => { lightboxImg.src = ''; }, 300);
 }
 
 if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
 if (lightboxBack) lightboxBack.addEventListener('click', closeLightbox);
-document.addEventListener('keydown', e => { 
-  if (e.key === 'Escape') closeLightbox(); 
-  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') navigateLightbox(e.key);
-});
-
-// Навигация по изображениям в лайтбоксе
-function navigateLightbox(key) {
-  if (!lightbox.classList.contains('open')) return;
-  
-  const currentSrc = lightboxImg.src;
-  const allWorks = [...designWorks, ...wbWorks];
-  const currentIndex = allWorks.findIndex(w => currentSrc.includes(w.src));
-  
-  if (currentIndex === -1) return;
-  
-  let nextIndex;
-  if (key === 'ArrowLeft') {
-    nextIndex = currentIndex > 0 ? currentIndex - 1 : allWorks.length - 1;
-  } else if (key === 'ArrowRight') {
-    nextIndex = currentIndex < allWorks.length - 1 ? currentIndex + 1 : 0;
-  }
-  
-  const nextWork = allWorks[nextIndex];
-  openLightbox(nextWork.src, nextWork.title);
-}
-
-// Мобильное меню
-function initMobileMenu() {
-  const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-  const navLinks = document.querySelectorAll('.nav a');
-  
-  if (!mobileMenuToggle) return;
-  
-  // Создаем мобильное меню
-  const mobileMenu = document.createElement('div');
-  mobileMenu.className = 'mobile-menu';
-  mobileMenu.id = 'mobileMenu';
-  
-  // Копируем ссылки из основной навигации
-  navLinks.forEach(link => {
-    const mobileLink = document.createElement('a');
-    mobileLink.href = link.href;
-    mobileLink.textContent = link.textContent;
-    mobileLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      const id = link.getAttribute('href').slice(1);
-      const target = document.getElementById(id);
-      if (target) {
-        const top = target.getBoundingClientRect().top + window.scrollY - 64;
-        window.scrollTo({ top, behavior: 'smooth' });
-        closeMobileMenu();
-      }
-    });
-    mobileMenu.appendChild(mobileLink);
-  });
-  
-  document.body.appendChild(mobileMenu);
-  
-  // Функции открытия/закрытия меню
-  function openMobileMenu() {
-    mobileMenu.classList.add('active');
-    mobileMenuToggle.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-  
-  function closeMobileMenu() {
-    mobileMenu.classList.remove('active');
-    mobileMenuToggle.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-  
-  // Обработчики событий
-  mobileMenuToggle.addEventListener('click', () => {
-    if (mobileMenu.classList.contains('active')) {
-      closeMobileMenu();
-    } else {
-      openMobileMenu();
-    }
-  });
-  
-  // Закрытие меню при клике вне его
-  mobileMenu.addEventListener('click', (e) => {
-    if (e.target === mobileMenu) {
-      closeMobileMenu();
-    }
-  });
-  
-  // Закрытие меню при нажатии Escape
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
-      closeMobileMenu();
-    }
-  });
-  
-  // Закрытие меню при изменении размера окна
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 480 && mobileMenu.classList.contains('active')) {
-      closeMobileMenu();
-    }
-  });
-}
-
-// Регистрация Service Worker для PWA
-function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('Service Worker зарегистрирован:', registration.scope);
-        
-        // Проверка обновлений
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          console.log('Обнаружено обновление Service Worker');
-          
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // Новый Service Worker установлен, показать уведомление
-              showUpdateNotification();
-            }
-          });
-        });
-      })
-      .catch(error => {
-        console.log('Ошибка регистрации Service Worker:', error);
-      });
-  }
-}
-
-// Показать уведомление об обновлении
-function showUpdateNotification() {
-  if ('Notification' in window && Notification.permission === 'granted') {
-    new Notification('Доступно обновление!', {
-      body: 'Нажмите, чтобы обновить страницу',
-      icon: 'images/logo.png'
-    });
-  }
-}
-
-// Запрос разрешения на уведомления
-function requestNotificationPermission() {
-  if ('Notification' in window && Notification.permission === 'default') {
-    Notification.requestPermission().then(permission => {
-      console.log('Разрешение на уведомления:', permission);
-    });
-  }
-}
-
-// Инициализация после загрузки DOM
-document.addEventListener('DOMContentLoaded', () => {
-  initLazyLoading();
-  preloadCriticalImages();
-  initReveal();
-  initMobileMenu();
-  
-  // Загрузка оптимизаций
-  if (typeof optimize !== 'undefined') {
-    optimize.initOptimizations();
-  }
-  
-  // Регистрация Service Worker
-  registerServiceWorker();
-  
-  // Запрос разрешения на уведомления
-  requestNotificationPermission();
-});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
