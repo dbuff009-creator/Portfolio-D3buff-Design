@@ -70,18 +70,18 @@
   <section class="hero section" id="hero">
     <div class="container hero__inner">
       <div class="hero__text">
-        <p class="hero__sub reveal">Привет, я <span style="display: inline-block; transform: scaleX(2); margin: 0 11px;">—</span></p>
-        <h1 class="hero__name reveal delay-1">Артём </h1><h1 class="hero__name red reveal delay-1">D3buff</span></h1>
-        <div class="hero__role reveal delay-2">
+        <p class="hero__sub reveal reveal--fade">Привет, я <span style="display: inline-block; transform: scaleX(2); margin: 0 11px;">—</span></p>
+        <h1 class="hero__name reveal reveal--up delay-1">Артём </h1><h1 class="hero__name red reveal reveal--up delay-2">D3buff</h1>
+        <div class="hero__role reveal reveal--fade delay-2">
           <div class="role-badge"></div>
         </div>
-        <p class="hero__desc reveal delay-3">
+        <p class="hero__desc reveal reveal--up delay-3">
           Специализируюсь на визуале, но умею заставлять технологии работать на результат.<br/>
           Мой подход — это микс <span style="color: var(--red);">идей</span> и <span style="color: var(--red);">лучшего подхода </span>к задаче.
         </p>
-        <a href="#works" class="btn reveal delay-4">Смотреть работы</a>
+        <a href="#works" class="btn reveal reveal--up delay-4">Смотреть работы</a>
       </div>
-<div class="hero__ferret reveal delay-2">
+<div class="hero__ferret reveal reveal--right delay-2">
   <img id="ferret-target" src="images/Xorek.png" alt="Хорёк" class="ferret-img" />
 </div>
 
@@ -94,19 +94,19 @@
   <section class="about section" id="about">
     <div class="container">
 
-      <h2 class="section-title reveal">Обо мне</h2>
-      <p class="section-sub reveal">Кто я, чем занимаюсь и что умею</p>
+      <h2 class="section-title reveal reveal--up">Обо мне</h2>
+      <p class="section-sub">Кто я, чем занимаюсь и что умею</p>
 
-      <div class="about__body reveal delay-1">
+      <div class="about__body">
         <p class="about__bio">
           Меня зовут Артём, я мультидисциплинарный дизайнер, который превращает идеи в выразительный визуальный продукт. В работе использую Photoshop, Blender и After Effects, создавая всё: от стильных постеров и PFP до графики для маркетплейсов и моушн-дизайна. Помимо визуала, я занимаюсь разработкой сайтов, где применяю нейросети для написания и оптимизации кода. Такой подход позволяет мне совмещать чистую эстетику с технической логикой, создавая качественные и современные цифровые решения.
         </p>
         <p class="about__sub">14 лет · дизайнер · всегда на связи</p>
       </div>
 
-      <div class="about__divider reveal delay-2"></div>
+      <div class="about__divider"></div>
 
-      <div class="about__cols3 reveal delay-3">
+      <div class="about__cols3">
         <div class="about__col">
           <p class="about__col-title">Софт</p>
           <p>Photoshop</p>
@@ -138,10 +138,10 @@
   <!-- SKILLS -->
   <section class="skills section" id="skills">
     <div class="container">
-      <h2 class="section-title reveal">Навыки</h2>
-      <p class="section-sub reveal">Инструменты, с которыми я работаю каждый день</p>
+      <h2 class="section-title reveal reveal--up">Навыки</h2>
+      <p class="section-sub">Инструменты, с которыми я работаю каждый день</p>
 
-      <div class="skill-table reveal delay-1">
+      <div class="skill-table">
         <div class="skill-list">
 
           <div class="skill-row">
@@ -203,7 +203,8 @@
               <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/figma.svg" alt="Figma" class="skill-icon-img" style="filter:invert(1)">
             </div>
             <span class="skill-row__name">Figma</span>
-            <span class="skill-row__stars">★★<span class="skill-star-off">★★★</span></span            <span class="skill-row__label">Базовый</span>
+            <span class="skill-row__stars">★★<span class="skill-star-off">★★★</span></span>
+            <span class="skill-row__label">Базовый</span>
           </div>
 
           <div class="skill-row">
@@ -226,17 +227,15 @@
   <!-- WORKS -->
   <section class="works section" id="works">
     <div class="container">
-      <h2 class="section-title reveal">Работы</h2>
-      <p class="section-sub reveal">Избранные проекты — постеры, баннеры, ассеты и не только</p>
+      <h2 class="section-title reveal reveal--up">Работы</h2>
+      <p class="section-sub">Избранные проекты — постеры, баннеры, ассеты и не только</p>
 
-      <!-- Заполняется из works.json -->
       <div class="masonry" id="mainGrid"></div>
 
-      <!-- WB PROJECT BLOCK -->
       <div class="wb-block" id="wbBlock" style="display:none">
         <div class="wb-block__header">
-
-            <span class="section-title_WB reveal">Инфографика для платформы <span style="color: #e02020;">Wildberries</span></span>
+          <span class="section-title_WB">Инфографика для платформы <span style="color: #e02020;">Wildberries</span></span>
+        </div>
         <div class="masonry masonry--wb" id="wbGrid"></div>
       </div>
 
@@ -253,9 +252,9 @@
   <section class="contact section" id="contact">
     <img src="images/gif.gif" alt="" class="contact__gif">
     <div class="container">
-      <h2 class="section-title reveal">Контакты</h2>
-      <p class="section-sub reveal">Напиши мне — и я отвечу</p>
-      <div class="contact-dashboard reveal delay-1">
+      <h2 class="section-title reveal reveal--up">Контакты</h2>
+      <p class="section-sub">Напиши мне — и я отвечу</p>
+      <div class="contact-dashboard">
 
         <a href="https://t.me/d3bufff" target="_blank" class="contact-card contact-card--tg">
           <div class="contact-card__icon">
@@ -334,6 +333,7 @@
     </div>
   </div>
 
+  <script src="works-data.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

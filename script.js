@@ -1,26 +1,78 @@
 // ╔══════════════════════════════════════════════════╗
-// ║           СПИСОК РАБОТ — редактируй здесь        ║
-// ║  src:   имя файла (или подпапка/файл.jpg)        ║
-// ║  group: "design" или "wb"                        ║
-// ║  title берётся автоматически из имени файла      ║
+// ║  Работы из works.json — обновить-работы.bat      ║
+// ║  Инструкция: ПРОСТО.md                           ║
 // ╚══════════════════════════════════════════════════╝
 
 const FOLDER = 'работы/';
-
-const WORKS = [
-  { src: 'poster_with_man.jpg',                         group: 'design' },
-  { src: 'meme.lua_banner.jpg', group: 'design' },
-  { src: 'meme.lua_poster.jpg', group: 'design' },
-  { src: 'Wb_rem.jpg', group: 'design' },
-  { src: 'SakaynoS PFP.jpg', group: 'design' },
-  { src: 'QRposter.jpg', group: 'design' },
-  { src: 'dog_poster.jpg',           group: 'design' },
-  { src: 'wb работа_1/Обложка.jpg',                  group: 'wb' },
-  { src: 'wb работа_1/2 слайд.png',                  group: 'wb' },
-  { src: 'wb работа_1/3 слайд.png',                  group: 'wb' },
-].map(w => ({ src: FOLDER + w.src, title: w.src.split('/').pop(), group: w.group }));
-
 const SHOW_ALL_THRESHOLD = 16;
+
+function withFolder(path) {
+  return path.startsWith(FOLDER) ? path : FOLDER + path;
+}
+
+function normalizeWorksData(data) {
+  if (data.singles && data.groups) {
+    return {
+      singles: data.singles.map(s => ({
+        src: withFolder(s.src),
+        title: s.title || s.src.split('/').pop(),
+      })),
+      groups: data.groups.map(g => ({
+        ...g,
+        items: g.items.map(i => ({
+          src: withFolder(i.src),
+          title: i.title || i.src.split('/').pop(),
+        })),
+      })),
+    };
+  }
+
+  const singles = [];
+  const groupMap = new Map();
+  for (const w of data.works || []) {
+    const src = w.src;
+    const parts = src.split('/');
+    if (parts.length === 1) {
+      singles.push({ src: withFolder(src), title: w.title || parts[0] });
+    } else {
+      const folder = parts[0];
+      if (!groupMap.has(folder)) {
+        const lower = folder.toLowerCase();
+        groupMap.set(folder, {
+          folder,
+          title: lower === 'avatarka' ? 'Аватарка' : folder,
+          layout: lower === 'avatarka' ? 'avatarka' : /wb/i.test(folder) ? 'wb' : 'project',
+          tag: /wb/i.test(folder) ? 'wb' : undefined,
+          items: [],
+        });
+      }
+      groupMap.get(folder).items.push({
+        src: withFolder(src),
+        title: w.title || parts[parts.length - 1],
+      });
+    }
+  }
+  return { singles, groups: [...groupMap.values()] };
+}
+
+async function loadWorks() {
+  let raw = window.WORKS_DATA;
+  if (!raw) {
+    try {
+      const res = await fetch('works.json?' + Date.now());
+      if (!res.ok) throw new Error('works.json not found');
+      raw = await res.json();
+    } catch (e) {
+      console.warn('Работы не загрузились. Запусти обновить-работы.bat', e);
+      return { singles: [], groups: [] };
+    }
+  }
+  return normalizeWorksData(raw);
+}
+
+function totalWorkCount({ singles, groups }) {
+  return singles.length + groups.reduce((n, g) => n + g.items.length, 0);
+}
 
 // ═══════════════════════════════════════════════════════
 // ТЕМА И ЯЗЫК
@@ -57,6 +109,7 @@ const translations = {
     footer: '© 2026 D3buff. Все права защищены. <p>Отдельная благодарность <span style="color:rgba(255,255,255,0.75);font-weight:300;">Kiro AI</span> <span style="font-weight: 900; margin: 6px;"> · </span> Сайт был за 3 дня</p>',
     expert: 'Эксперт', intermediate: 'Средний', basic: 'Базовый', advanced: 'Продвинутый', low: 'Низкий',
     wbTitle: 'Инфографика для платформы <span style="color: #e02020;">Wildberries</span>',
+    avatarkaTitle: '<span style="color: #e02020;">Новая</span> аватарка',
     scrollTop: 'Наверх'
   },
   en: {
@@ -83,6 +136,7 @@ const translations = {
     footer: '© 2026 D3buff. All rights reserved. <p>Special thanks to <span style="color:rgba(255,255,255,0.75);font-weight:300;">Kiro AI</span> <span style="font-weight: 900; margin: 6px;"> · </span> Site was made in 3 days</p>',
     expert: 'Expert', intermediate: 'Intermediate', basic: 'Basic', advanced: 'Advanced', low: 'Low',
     wbTitle: 'Infographics for <span style="color: #e02020;">Wildberries</span> platform',
+    avatarkaTitle: '<span style="color: #e02020;">New</span> pfp',
     scrollTop: 'To top'
   }
 };
@@ -217,6 +271,8 @@ function translatePage(lang) {
   if (allWorksBtn) allWorksBtn.textContent = t.allWorks;
   const wbTitle = document.querySelector('.section-title_WB');
   if (wbTitle) wbTitle.innerHTML = t.wbTitle;
+  const avatarkaTitle = document.querySelector('.section-title_avatarka');
+  if (avatarkaTitle) avatarkaTitle.innerHTML = t.avatarkaTitle;
 
   // Contact
   const contactTitle = document.querySelector('#contact .section-title');
@@ -468,26 +524,137 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
   });
 });
 
+function drawTitleAccentLines(el) {
+  if (!el) return;
+  el.querySelectorAll?.('.section-title_WB, .section-title_avatarka, .section-title_project')
+    .forEach(t => t.classList.add('title-line--drawn'));
+  if (el.matches?.('.section-title_WB, .section-title_avatarka, .section-title_project, .section-title')) {
+    el.classList.add('title-line--drawn');
+  }
+}
+
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('visible');
+      drawTitleAccentLines(entry.target);
       revealObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.08 });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
 function initReveal() {
-  document.querySelectorAll('.reveal:not(.visible)').forEach(el => revealObserver.observe(el));
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+    if (el.closest('.hero--enter')) return;
+    revealObserver.observe(el);
+  });
+}
+
+function initPageEntrance() {
+  const header = document.querySelector('.header');
+  if (header) header.classList.add('header--enter');
+
+  const hero = document.getElementById('hero');
+  if (hero) {
+    hero.classList.add('hero--enter');
+    hero.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+  }
+
+  document.querySelectorAll('.section-title.reveal').forEach(el => {
+    if (el.classList.contains('visible')) drawTitleAccentLines(el);
+  });
+
+  const jobsHero = document.querySelector('.jobs-hero');
+  if (jobsHero) {
+    jobsHero.classList.add('hero--enter');
+    jobsHero.querySelectorAll('.reveal').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), 60 + i * 100);
+    });
+  }
+}
+
+function parseSkillStars(starsEl) {
+  if (starsEl.dataset.starsParsed) return;
+  starsEl.dataset.starsParsed = '1';
+
+  const items = [];
+  function walk(node, state) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      for (const ch of node.textContent) {
+        if (ch === '★') items.push(state);
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      let next = state;
+      if (node.classList.contains('skill-star-off')) next = 'off';
+      if (node.classList.contains('skill-star-half')) next = 'half';
+      node.childNodes.forEach(child => walk(child, next));
+    }
+  }
+  starsEl.childNodes.forEach(child => walk(child, 'on'));
+
+  starsEl.innerHTML = '';
+  items.forEach((type, i) => {
+    const span = document.createElement('span');
+    span.className = `skill-star skill-star--${type}`;
+    span.textContent = '★';
+    span.style.setProperty('--star-i', String(i));
+    starsEl.appendChild(span);
+  });
+}
+
+function initSkillStarsAnimation() {
+  const table = document.querySelector('.skill-table');
+  const section = document.getElementById('skills');
+  if (!table || !section) return;
+
+  document.querySelectorAll('.skill-row__stars').forEach(parseSkillStars);
+
+  const starsObserver = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) {
+      requestAnimationFrame(() => table.classList.add('skills-stars-play'));
+      starsObserver.disconnect();
+    }
+  }, { threshold: 0.15 });
+
+  starsObserver.observe(table);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initPageEntrance();
+    initSkillStarsAnimation();
+  });
+} else {
+  initPageEntrance();
+  initSkillStarsAnimation();
 }
 initReveal();
 
-function createItem(work, index) {
-  const delays = ['', ' delay-1', ' delay-2', ' delay-3', ' delay-4', ' delay-5'];
+function delayClass(index) {
+  const n = Math.min((index % 5) + 1, 5);
+  return ` delay-${n}`;
+}
+
+function workRevealClass(index) {
+  return 'reveal reveal--up' + delayClass(index);
+}
+
+const lineObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      drawTitleAccentLines(entry.target);
+      lineObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+function observeBlockTitleLine(block) {
+  if (block) lineObserver.observe(block);
+}
+
+function createItem(work, index, animated = true) {
   const div = document.createElement('div');
-  div.className = 'masonry-item reveal' + delays[index % 6];
-  div.dataset.src = work.src;
-  div.dataset.title = work.title;
+  div.className = 'masonry-item' + (animated ? ' ' + workRevealClass(index) : '');
   const img = document.createElement('img');
   img.src = work.src;
   img.alt = work.title;
@@ -497,40 +664,154 @@ function createItem(work, index) {
   return div;
 }
 
-const designWorks = WORKS.filter(w => w.group === 'design');
-const wbWorks = WORKS.filter(w => w.group === 'wb');
-
-const mainGrid = document.getElementById('mainGrid');
-const wbGrid = document.getElementById('wbGrid');
-const wbBlock = document.getElementById('wbBlock');
-const worksMoreBtn = document.getElementById('worksMoreBtn');
-
-if (mainGrid) {
-  designWorks.slice(0, SHOW_ALL_THRESHOLD - 1).forEach((w, i) => mainGrid.appendChild(createItem(w, i)));
-  if (wbWorks.length > 0 && wbGrid && wbBlock) {
-    wbWorks.forEach((w, i) => wbGrid.appendChild(createItem(w, i)));
-    wbBlock.style.display = '';
-    wbBlock.classList.add('reveal');
-  }
-  if (worksMoreBtn && designWorks.length >= SHOW_ALL_THRESHOLD) {
-    worksMoreBtn.style.display = '';
-    worksMoreBtn.classList.add('reveal');
-  }
-  initReveal();
+function fillMasonryGrid(grid, items, startIndex = 0, animated = true) {
+  items.forEach((item, i) => grid.appendChild(createItem(item, startIndex + i, animated)));
 }
 
-const jobsMainGrid = document.getElementById('jobsMainGrid');
-const jobsWbGrid = document.getElementById('jobsWbGrid');
-const jobsWbGroup = document.getElementById('jobsWbGroup');
+function createWbBlock(group, animated = true) {
+  const block = document.createElement('div');
+  block.className = 'wb-block';
 
-if (jobsMainGrid) {
-  designWorks.forEach((w, i) => jobsMainGrid.appendChild(createItem(w, i)));
-  if (wbWorks.length > 0 && jobsWbGrid && jobsWbGroup) {
-    wbWorks.forEach((w, i) => jobsWbGrid.appendChild(createItem(w, i)));
-    jobsWbGroup.style.display = '';
-  }
-  initReveal();
+  const header = document.createElement('div');
+  header.className = 'wb-block__header';
+  header.innerHTML =
+    '<span class="section-title_WB">Инфографика для платформы <span style="color: #e02020;">Wildberries</span></span>';
+  block.appendChild(header);
+
+  const grid = document.createElement('div');
+  grid.className = 'masonry masonry--wb';
+  fillMasonryGrid(grid, group.items, 0, animated);
+  block.appendChild(grid);
+  return block;
 }
+
+function createProjectBlock(group, animated = true) {
+  const block = document.createElement('div');
+  block.className = 'project-block';
+
+  const header = document.createElement('div');
+  header.className = 'project-block__header';
+  const title = document.createElement('span');
+  title.className = 'section-title_project';
+  title.textContent = group.title || group.folder;
+  header.appendChild(title);
+  block.appendChild(header);
+
+  const grid = document.createElement('div');
+  grid.className = 'masonry';
+  fillMasonryGrid(grid, group.items, 0, animated);
+  block.appendChild(grid);
+  return block;
+}
+
+function avatarkaSort(items) {
+  const order = (name) => {
+    const n = name.toLowerCase();
+    if (n.includes('obzor')) return 3;
+    if (n.includes('old')) return 1;
+    if (n.includes('new')) return 2;
+    return 4;
+  };
+  return [...items].sort((a, b) => order(a.title) - order(b.title) || a.title.localeCompare(b.title, 'ru'));
+}
+
+function createAvatarkaBlock(group) {
+  const block = document.createElement('div');
+  block.className = 'avatarka-block';
+
+  const header = document.createElement('div');
+  header.className = 'avatarka-block__header';
+  header.innerHTML = '<span class="section-title_avatarka">Новая <span>Аватарка</span></span>';
+  block.appendChild(header);
+
+  const grid = document.createElement('div');
+  grid.className = 'avatarka-grid';
+
+  avatarkaSort(group.items).forEach(item => {
+    const isObzor = /obzor/i.test(item.title);
+    const cell = document.createElement('div');
+    cell.className = 'avatarka-item' + (isObzor ? ' avatarka-item-obzor' : '');
+
+    const img = document.createElement('img');
+    img.src = item.src;
+    img.alt = item.title;
+    img.className = isObzor ? 'avatarka-img-obzor' : 'avatarka-img';
+
+    cell.appendChild(img);
+    if (!isObzor) {
+      const label = document.createElement('span');
+      label.className = 'avatarka-label';
+      label.textContent = item.title.replace(/\.[^.]+$/, '').replace(/_/g, ' ');
+      cell.appendChild(label);
+    }
+    cell.addEventListener('click', () => openLightbox(item.src, item.title));
+    grid.appendChild(cell);
+  });
+
+  block.appendChild(grid);
+  return block;
+}
+
+async function renderWorks() {
+  const { singles, groups } = await loadWorks();
+  const wbGroups = groups.filter(g => g.layout === 'wb');
+  const projectGroups = groups.filter(g => g.layout === 'project');
+  const avatarkaGroups = groups.filter(g => g.layout === 'avatarka');
+  const total = totalWorkCount({ singles, groups });
+
+  const mainGrid = document.getElementById('mainGrid');
+  const wbBlock = document.getElementById('wbBlock');
+  const wbGrid = document.getElementById('wbGrid');
+  const worksMoreBtn = document.getElementById('worksMoreBtn');
+
+  if (mainGrid) {
+    const wbCount = wbGroups.reduce((n, g) => n + g.items.length, 0);
+    let remaining = SHOW_ALL_THRESHOLD - wbCount;
+
+    const designToShow = Math.min(singles.length, Math.max(0, remaining));
+    singles.slice(0, designToShow).forEach((w, i) => mainGrid.appendChild(createItem(w, i)));
+    remaining -= designToShow;
+
+    if (wbGrid && wbBlock && wbGroups[0] && wbGroups[0].items.length <= remaining) {
+      wbBlock.className = 'wb-block';
+      wbBlock.style.display = '';
+      fillMasonryGrid(wbGrid, wbGroups[0].items);
+      observeBlockTitleLine(wbBlock);
+    }
+
+    if (worksMoreBtn && total >= SHOW_ALL_THRESHOLD) {
+      worksMoreBtn.style.display = '';
+    }
+    initReveal();
+  }
+
+  const jobsMasonry = document.getElementById('jobsMasonry');
+  const jobsExtra = document.getElementById('jobsExtra');
+
+  if (jobsMasonry) {
+    singles.forEach((w, i) => jobsMasonry.appendChild(createItem(w, i, false)));
+  }
+
+  if (jobsExtra) {
+    wbGroups.forEach(g => {
+      const block = createWbBlock(g, false);
+      jobsExtra.appendChild(block);
+      observeBlockTitleLine(block);
+    });
+    projectGroups.forEach(g => {
+      const block = createProjectBlock(g, false);
+      jobsExtra.appendChild(block);
+      observeBlockTitleLine(block);
+    });
+    avatarkaGroups.forEach(g => {
+      const block = createAvatarkaBlock(g);
+      jobsExtra.appendChild(block);
+      observeBlockTitleLine(block);
+    });
+  }
+}
+
+renderWorks();
 
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');

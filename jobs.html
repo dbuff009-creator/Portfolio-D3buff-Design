@@ -11,6 +11,18 @@
 </head>
 <body>
 
+  <!-- CUSTOM CURSOR -->
+  <div id="custom-cursor">
+    <img src="images/Cursor.png" id="cursor-img" alt="Cursor">
+  </div>
+  
+  <!-- BLUR FILTER FOR CURSOR -->
+  <svg width="0" height="0" style="position: absolute; display: none;">
+    <filter id="motionBlur">
+      <feGaussianBlur id="blurElement" in="SourceGraphic" stdDeviation="0 0" />
+    </filter>
+  </svg>
+
   <!-- HEADER -->
   <header class="header" id="top">
     <div class="container header__inner">
@@ -21,20 +33,41 @@
         <a href="index.html#works">Работы</a>
         <a href="index.html#contact">Контакт</a>
       </nav>
+      <div class="header-controls">
+        <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+          <svg class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3V4M12 20V21M4 12H3M6.31412 6.31412L5.5 5.5M17.6859 6.31412L18.5 5.5M6.31412 17.69L5.5 18.5M17.6859 17.69L18.5 18.5M21 12H20M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="language-select">
+          <button class="language-toggle" id="languageToggle" aria-label="Выбрать язык">
+            <svg class="language-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 12H22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 2C14.5013 4.73835 15.9228 8.29203 16 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8 12C8.07725 8.29203 9.49872 4.73835 12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="language-current">RU</span>
+          </button>
+          <div class="language-dropdown" id="languageDropdown">
+            <button class="language-option" data-lang="ru">Русский</button>
+            <button class="language-option" data-lang="en">English</button>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
   <!-- PAGE HERO -->
   <section class="jobs-hero">
     <div class="container jobs-hero__inner">
-      <a href="index.html" class="back-btn">
+      <a href="index.html" class="back-btn reveal reveal--fade">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Назад
       </a>
-      <h1 class="jobs-hero__title reveal">Все <span class="red">работы</span></h1>
-      <p class="jobs-hero__sub reveal delay-1">Полный архив проектов</p>
+      <h1 class="jobs-hero__title reveal reveal--up">Все <span class="red">работы</span></h1>
+      <p class="jobs-hero__sub reveal reveal--fade delay-1">Полный архив проектов</p>
     </div>
   </section>
 
@@ -42,14 +75,12 @@
   <section class="jobs-works">
     <div class="container">
       <div class="jobs-group">
-        <h2 class="jobs-group__title">Дизайн</h2>
-        <div class="masonry" id="jobsMainGrid"></div>
+        <h2 class="jobs-group__title"><span style="color: red; display: inline-block; transform: scaleX(1.2); margin: 0 5px;">—</span>Дизайн</h2>
+        <div class="masonry" id="jobsMasonry"></div>
       </div>
-      <div class="jobs-group" id="jobsWbGroup" style="display:none">
-        <h2 class="jobs-group__title">WB Проект</h2>
-        <div class="masonry masonry--wb" id="jobsWbGrid"></div>
-      </div>
-      <div class="jobs-back-bottom reveal">
+      <div id="jobsExtra"></div>
+
+      <div class="jobs-back-bottom">
         <a href="index.html" class="btn btn--outline">← Вернуться на главную</a>
       </div>
     </div>
@@ -79,6 +110,7 @@
     </div>
   </div>
 
+  <script src="works-data.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
