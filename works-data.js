@@ -1,7 +1,11 @@
 // Автоматически: обновить-работы.bat
 window.WORKS_DATA = {
-  "updatedAt": "2026-05-27T23:56:53.163Z",
+  "updatedAt": "2026-06-02T12:16:04.186Z",
   "singles": [
+    {
+      "src": "+150.png",
+      "title": "+150.png"
+    },
     {
       "src": "22323.png",
       "title": "22323.png"
