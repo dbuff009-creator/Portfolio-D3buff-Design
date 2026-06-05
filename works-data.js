@@ -1,38 +1,38 @@
 // Автоматически: обновить-работы.bat
 window.WORKS_DATA = {
-  "updatedAt": "2026-06-02T12:16:04.186Z",
+  "updatedAt": "2026-06-05T01:58:54.517Z",
   "singles": [
     {
-      "src": "+150.png",
-      "title": "+150.png"
-    },
-    {
-      "src": "22323.png",
-      "title": "22323.png"
+      "src": "Russian Roleplay.png",
+      "title": "Russian Roleplay.png"
     },
     {
       "src": "bb.jpg",
       "title": "bb.jpg"
     },
     {
-      "src": "dog_poster.jpg",
-      "title": "dog_poster.jpg"
+      "src": "22323.png",
+      "title": "22323.png"
     },
     {
-      "src": "meme.lua_banner.jpg",
-      "title": "meme.lua_banner.jpg"
+      "src": "QRposter.jpg",
+      "title": "QRposter.jpg"
+    },
+    {
+      "src": "dog_poster.jpg",
+      "title": "dog_poster.jpg"
     },
     {
       "src": "meme.lua_poster.jpg",
       "title": "meme.lua_poster.jpg"
     },
     {
-      "src": "poster_with_man.jpg",
-      "title": "poster_with_man.jpg"
+      "src": "meme.lua_banner.jpg",
+      "title": "meme.lua_banner.jpg"
     },
     {
-      "src": "QRposter.jpg",
-      "title": "QRposter.jpg"
+      "src": "poster_with_man.jpg",
+      "title": "poster_with_man.jpg"
     },
     {
       "src": "SakaynoS PFP.jpg",
@@ -89,7 +89,8 @@ window.WORKS_DATA = {
           "src": "wb работа_1/Обложка.jpg",
           "title": "Обложка.jpg"
         }
-      ]
+      ],
+      "description": "Это Тех Задание компании WildSpace"
     }
   ]
 };

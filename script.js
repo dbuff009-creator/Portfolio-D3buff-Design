@@ -4,7 +4,8 @@
 // ╚══════════════════════════════════════════════════╝
 
 const FOLDER = 'работы/';
-const SHOW_ALL_THRESHOLD = 16;
+/** Сколько отдельных картинок (не из папок) показывать на главной */
+const MAIN_SINGLES_LIMIT = 11;
 
 function withFolder(path) {
   return path.startsWith(FOLDER) ? path : FOLDER + path;
@@ -22,6 +23,7 @@ function normalizeWorksData(data) {
         items: g.items.map(i => ({
           src: withFolder(i.src),
           title: i.title || i.src.split('/').pop(),
+          description: g.description || '',
         })),
       })),
     };
@@ -70,76 +72,15 @@ async function loadWorks() {
   return normalizeWorksData(raw);
 }
 
-function totalWorkCount({ singles, groups }) {
-  return singles.length + groups.reduce((n, g) => n + g.items.length, 0);
+function hasArchivePage({ singles, groups }) {
+  return singles.length > MAIN_SINGLES_LIMIT || groups.length > 0;
 }
 
 // ═══════════════════════════════════════════════════════
-// ТЕМА И ЯЗЫК
+// ТЕМА
 // ═══════════════════════════════════════════════════════
 
 const themeBtn = document.getElementById('themeToggle');
-const langBtn = document.getElementById('languageToggle');
-const langDropdown = document.getElementById('languageDropdown');
-const langCurrent = document.querySelector('.language-current');
-const langOptions = document.querySelectorAll('.language-option');
-
-const translations = {
-  ru: {
-    about: 'Обо мне', skills: 'Навыки', works: 'Работы', contact: 'Контакт',
-    heroSub: 'Привет, я', heroName: 'Артём', red: 'D3buff' , heroDesc: 'Специализируюсь на визуале, но умею заставлять технологии работать на результат.<br/>Мой подход — это микс <span style="color: var(--red);">идей</span> и <span style="color: var(--red);">лучшего подхода </span>к задаче.',
-    viewWorks: 'Смотреть работы',
-    aboutTitle: 'Обо мне', aboutSub: 'Кто я, чем занимаюсь и что умею',
-    aboutBio: 'Меня зовут Артём, я мультидисциплинарный дизайнер, который превращает идеи в выразительный визуальный продукт. В работе использую Photoshop, Blender и After Effects, создавая всё: от стильных постеров и PFP до графики для маркетплейсов и моушн-дизайна. Помимо визуала, я занимаюсь разработкой сайтов, где применяю нейросети для написания и оптимизации кода. Такой подход позволяет мне совмещать чистую эстетику с технической логикой, создавая качественные и современные цифровые решения.',
-    aboutSubText: '14 лет · дизайнер · всегда на связи',
-    soft: 'Софт', personalQualities: 'Личные качества', languages: 'Языки',
-    attentionToDetail: 'Внимание к деталям', seeCompanyStyle: 'Вижу стиль компании',
-    responsibility: 'Ответственность', creativeThinking: 'Креативное мышление', hardworking: 'Трудолюбивый',
-    russianNative: 'Русский (родной)', englishLevel: 'Англиский A1/A2 Начальный', efsetText: 'тест от efset.org',
-    aiTools: 'AI-инструменты', htmlCssNote: '(Онли c ИИ)',  html_Note: '(Онли c ИИ)',
-    skillsTitle: 'Навыки', skillsSub: 'Инструменты, с которыми я работаю каждый день',
-    worksTitle: 'Работы', worksSub: 'Избранные проекты — постеры, баннеры, ассеты и не только',
-    contactTitle: 'Контакты', contactSub: 'Напиши мне — и я отвечу',
-    telegram: 'Telegram', telegramHint: 'Написать в Telegram',
-    discord: 'Discord', discordHint: 'Перейти в Discord', discordValue: 'Открыть профиль',
-    clientWork: 'Работа с клиентами',
-    email: 'Email', emailHint: 'Написать письмо',
-    status: 'Статус', statusValue: 'Открыт к заказам', statusHint: 'Готов взяться за проект',
-    allWorks: 'Все работы →',
-    footer: '© 2026 D3buff. Все права защищены. <p>Отдельная благодарность <span style="color:rgba(255,255,255,0.75);font-weight:300;">Kiro AI</span> <span style="font-weight: 900; margin: 6px;"> · </span> Сайт был за 3 дня</p>',
-    expert: 'Эксперт', intermediate: 'Средний', basic: 'Базовый', advanced: 'Продвинутый', low: 'Низкий',
-    wbTitle: 'Инфографика для платформы <span style="color: #e02020;">Wildberries</span>',
-    avatarkaTitle: '<span style="color: #e02020;">Новая</span> аватарка',
-    scrollTop: 'Наверх'
-  },
-  en: {
-    about: 'About', skills: 'Skills', works: 'Works', contact: 'Contact',
-    heroSub: "Hi, I'm", heroName: 'Artem',red:'D3buff', heroDesc: "I specialize in visuals but know how to make technology work for results. My approach is a mix of <span style='color: var(--red);'>ideas</span> and <span style='color: var(--red);'>the best approach</span> to the task.",
-    viewWorks: 'View Works',
-    aboutTitle: 'About Me', aboutSub: 'Who I am, what I do and what I can do',
-    aboutBio: "My name is Artem, I'm a multidisciplinary designer who turns ideas into expressive visual products. In my work I use Photoshop, Blender and After Effects, creating everything from stylish posters and PFPs to graphics for marketplaces and motion design. Besides visuals, I'm involved in website development where I use neural networks for writing and optimizing code. This approach allows me to combine pure aesthetics with technical logic, creating quality and modern digital solutions.",
-    aboutSubText: '14 years · designer · always available',
-    soft: 'Software', personalQualities: 'Personal Qualities', languages: 'Languages',
-    attentionToDetail: 'Attention to detail', seeCompanyStyle: 'See company style',
-    responsibility: 'Responsibility', creativeThinking: 'Creative thinking', hardworking: 'Hardworking',
-    russianNative: 'Russian (native)', englishLevel: 'English A1/A2 Beginner', efsetText: 'test by efset.org',
-    aiTools: 'AI Tools', htmlCssNote: '(Only with AI)', html_Note: '(Only with AI)',
-    skillsTitle: 'Skills', skillsSub: 'Tools I work with every day',
-    worksTitle: 'Works', worksSub: 'Selected projects — posters, banners, assets and more',
-    contactTitle: 'Contact', contactSub: "Write to me — and I'll reply",
-    telegram: 'Telegram', telegramHint: 'Write in Telegram',
-    discord: 'Discord', discordHint: 'Go to Discord', discordValue: 'Open profile',
-    clientWork: 'Client work',
-    email: 'Email', emailHint: 'Write an email',
-    status: 'Status', statusValue: 'Open for orders', statusHint: 'Ready to take on a project',
-    allWorks: 'All Works →',
-    footer: '© 2026 D3buff. All rights reserved. <p>Special thanks to <span style="color:rgba(255,255,255,0.75);font-weight:300;">Kiro AI</span> <span style="font-weight: 900; margin: 6px;"> · </span> Site was made in 3 days</p>',
-    expert: 'Expert', intermediate: 'Intermediate', basic: 'Basic', advanced: 'Advanced', low: 'Low',
-    wbTitle: 'Infographics for <span style="color: #e02020;">Wildberries</span> platform',
-    avatarkaTitle: '<span style="color: #e02020;">New</span> pfp',
-    scrollTop: 'To top'
-  }
-};
 
 // ТЕМА
 function initTheme() {
@@ -167,205 +108,18 @@ function toggleTheme() {
 
 if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
-// ЯЗЫК
-function translatePage(lang) {
-  const t = translations[lang];
-  if (!t) return;
-
-  // Навигация
-  const navLinks = document.querySelectorAll('nav a');
-  if (navLinks[0]) navLinks[0].textContent = t.about;
-  if (navLinks[1]) navLinks[1].textContent = t.skills;
-  if (navLinks[2]) navLinks[2].textContent = t.works;
-  if (navLinks[3]) navLinks[3].textContent = t.contact;
-
-  // Hero
-  const heroSub = document.querySelector('.hero__sub');
-  if (heroSub) heroSub.innerHTML = t.heroSub + ' <span style="display: inline-block; transform: scaleX(2); margin: 0 11px;">—</span>';
-  const heroName = document.querySelector('.hero__name');
-  if (heroName && t.heroName) heroName.textContent = t.heroName;
-    const red = document.querySelector('.red');
-  if (red) red.innerHTML = t.red;
-  const heroDesc = document.querySelector('.hero__desc');
-  if (heroDesc) heroDesc.innerHTML = t.heroDesc;
-  const heroBtn = document.querySelector('.hero .btn');
-  if (heroBtn) heroBtn.textContent = t.viewWorks;
-
-  // About
-  const aboutTitle = document.querySelector('#about .section-title');
-  const aboutSub = document.querySelector('#about .section-sub');
-  if (aboutTitle) aboutTitle.textContent = t.aboutTitle;
-  if (aboutSub) aboutSub.textContent = t.aboutSub;
-  const aboutBio = document.querySelector('.about__bio');
-  if (aboutBio) aboutBio.textContent = t.aboutBio;
-  const aboutSubText = document.querySelector('.about__sub');
-  if (aboutSubText) aboutSubText.textContent = t.aboutSubText;
-  
-  // About колонки
-  const colTitles = document.querySelectorAll('.about__col-title');
-  if (colTitles[0]) colTitles[0].textContent = t.soft;
-  if (colTitles[1]) colTitles[1].textContent = t.personalQualities;
-  if (colTitles[2]) colTitles[2].textContent = t.languages;
-  
-  // About тексты
-  const aboutCol2 = document.querySelectorAll('.about__col:nth-child(2) p');
-  if (aboutCol2[1]) aboutCol2[1].textContent = t.attentionToDetail;
-  if (aboutCol2[2]) aboutCol2[2].textContent = t.seeCompanyStyle;
-  if (aboutCol2[3]) aboutCol2[3].textContent = t.responsibility;
-  if (aboutCol2[4]) aboutCol2[4].textContent = t.creativeThinking;
-  if (aboutCol2[5]) aboutCol2[5].textContent = t.hardworking;
-  
-  const aboutCol3 = document.querySelectorAll('.about__col:nth-child(3) p');
-  if (aboutCol3[1]) aboutCol3[1].textContent = t.russianNative;
-    const efsetText = document.querySelector('.testby');
-    const englishLevel = document.querySelector('.englishLevel');
-    if (englishLevel) englishLevel.textContent = t.englishLevel;
-    if (efsetText) efsetText.textContent = t.efsetText;
-
-  // Skills
-  const skillsTitle = document.querySelector('#skills .section-title');
-  const skillsSub = document.querySelector('#skills .section-sub');
-  if (skillsTitle) skillsTitle.textContent = t.skillsTitle;
-  if (skillsSub) skillsSub.textContent = t.skillsSub;
-  
-
-
-
-  const html_Note = document.querySelector('.html_Note');
-  if (html_Note && t.html_Note) html_Note.textContent = t.html_Note;
-
-
-  // Skills - HTML/CSS note (в таблице навыков)
-  const htmlCssNote = document.querySelector('.htmlCssNote');
-  if (htmlCssNote && t.htmlCssNote) htmlCssNote.textContent = t.htmlCssNote;
-  
-  // Skills - AI Tools row (в таблице навыков)
-  const aiToolsRow = document.querySelector('.skill-row:nth-child(5) .skill-row__name');
-  if (aiToolsRow && t.aiTools) aiToolsRow.textContent = t.aiTools;
-  
-  // About - AI Tools (первая колонка)
-  const aboutCol1 = document.querySelectorAll('.about__col:nth-child(1) p');
-  if (aboutCol1[5]) aboutCol1[5].textContent = t.aiTools;
-  
-  // Skills - Client work row
-  const clientWorkRow = document.querySelector('.skill-row:nth-child(8) .skill-row__name');
-  if (clientWorkRow && t.clientWork) clientWorkRow.textContent = t.clientWork;
-  
-  // Skills labels
-  const skillLabels = document.querySelectorAll('.skill-row__label');
-  if (skillLabels[0]) skillLabels[0].textContent = t.expert;
-  if (skillLabels[1]) skillLabels[1].textContent = t.intermediate;
-  if (skillLabels[2]) skillLabels[2].textContent = t.basic;
-  if (skillLabels[3]) skillLabels[3].textContent = t.intermediate;
-  if (skillLabels[4]) skillLabels[4].textContent = t.advanced;
-  if (skillLabels[5]) skillLabels[5].textContent = t.low;
-  if (skillLabels[6]) skillLabels[6].textContent = t.basic;
-  if (skillLabels[7]) skillLabels[7].textContent = t.advanced;
-
-  // Works
-  const worksTitle = document.querySelector('#works .section-title');
-  const worksSub = document.querySelector('#works .section-sub');
-  if (worksTitle) worksTitle.textContent = t.worksTitle;
-  if (worksSub) worksSub.textContent = t.worksSub;
-  const allWorksBtn = document.querySelector('.btn--outline');
-  if (allWorksBtn) allWorksBtn.textContent = t.allWorks;
-  const wbTitle = document.querySelector('.section-title_WB');
-  if (wbTitle) wbTitle.innerHTML = t.wbTitle;
-  const avatarkaTitle = document.querySelector('.section-title_avatarka');
-  if (avatarkaTitle) avatarkaTitle.innerHTML = t.avatarkaTitle;
-
-  // Contact
-  const contactTitle = document.querySelector('#contact .section-title');
-  const contactSub = document.querySelector('#contact .section-sub');
-  if (contactTitle) contactTitle.textContent = t.contactTitle;
-  if (contactSub) contactSub.textContent = t.contactSub;
-  
-  const contactCards = document.querySelectorAll('.contact-card');
-  contactCards.forEach(card => {
-    if (card.classList.contains('contact-card--tg')) {
-      const label = card.querySelector('.contact-card__label');
-      const hint = card.querySelector('.contact-card__hint');
-      if (label) label.textContent = t.telegram;
-      if (hint) hint.textContent = t.telegramHint;
-    } else if (card.classList.contains('contact-card--discord')) {
-      const label = card.querySelector('.contact-card__label');
-      const value = card.querySelector('.contact-card__value');
-      const hint = card.querySelector('.contact-card__hint');
-      if (label) label.textContent = t.discord;
-      if (value && t.discordValue) value.textContent = t.discordValue;
-      if (hint) hint.textContent = t.discordHint;
-    } else if (card.classList.contains('contact-card--email')) {
-      const label = card.querySelector('.contact-card__label');
-      const hint = card.querySelector('.contact-card__hint');
-      if (label) label.textContent = t.email;
-      if (hint) hint.textContent = t.emailHint;
-    } else if (card.classList.contains('contact-card--status')) {
-      const label = card.querySelector('.contact-card__label');
-      const value = card.querySelector('.contact-card__value');
-      const hint = card.querySelector('.contact-card__hint');
-      if (label) label.textContent = t.status;
-      if (value) value.textContent = t.statusValue;
-      if (hint) hint.textContent = t.statusHint;
-    }
-  });
-
-  // Footer
-  const footer = document.querySelector('.footer__inner');
-  if (footer) footer.innerHTML = t.footer;
-  
-  // Scroll top
-  const scrollTop = document.getElementById('scrollTop');
-  if (scrollTop) scrollTop.setAttribute('aria-label', t.scrollTop);
-
-  if (langCurrent) langCurrent.textContent = lang.toUpperCase();
-  localStorage.setItem('language', lang);
-  document.documentElement.lang = lang;
-}
-
-function initLanguage() {
-  const saved = localStorage.getItem('language') || 'ru';
-  translatePage(saved);
-}
-
-if (langBtn && langDropdown) {
-  langBtn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    const isVisible = langDropdown.style.opacity === '1';
-    langDropdown.style.opacity = isVisible ? '0' : '1';
-    langDropdown.style.visibility = isVisible ? 'hidden' : 'visible';
-    langDropdown.style.transform = isVisible ? 'translateY(-10px)' : 'translateY(0)';
-  });
-
-  langOptions.forEach(opt => {
-    opt.addEventListener('click', function() {
-      const lang = this.getAttribute('data-lang');
-      translatePage(lang);
-      langDropdown.style.opacity = '0';
-      langDropdown.style.visibility = 'hidden';
-      langDropdown.style.transform = 'translateY(-10px)';
-    });
-  });
-
-  document.addEventListener('click', function(e) {
-    if (!langBtn.contains(e.target) && !langDropdown.contains(e.target)) {
-      langDropdown.style.opacity = '0';
-      langDropdown.style.visibility = 'hidden';
-      langDropdown.style.transform = 'translateY(-10px)';
-    }
-  });
-}
-
 initTheme();
-initLanguage();
 
 // ═══════════════════════════════════════════════════════
 // ОСТАЛЬНОЙ КОД САЙТА
 // ═══════════════════════════════════════════════════════
 
+const isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
 const cursorImg = document.getElementById('cursor-img');
 const interactiveSelector = 'a, button, .btn, .skill-row__stars, input, [onclick], img';
 
-document.addEventListener('mouseover', (e) => {
+if (!isTouchDevice && cursorImg) document.addEventListener('mouseover', (e) => {
   if (e.target.closest(interactiveSelector)) {
     cursorImg.src = 'images/Pointer.png';
     cursor.style.transform = 'translate(-50%, -50%) scale(0.9)';
@@ -375,34 +129,64 @@ document.addEventListener('mouseover', (e) => {
   }
 });
 
-document.addEventListener('mouseleave', () => {
-  cursorImg.src = 'images/Cursor.png';
-});
+if (!isTouchDevice && cursorImg) {
+  document.addEventListener('mouseleave', () => {
+    cursorImg.src = 'images/Cursor.png';
+  });
+}
 
 const cursor = document.getElementById('custom-cursor');
 const blurElement = document.getElementById('blurElement');
 
-let lastX = 0, lastY = 0, speedX = 0, speedY = 0;
+if (!isTouchDevice && cursor && blurElement) {
+  let lastX = 0, lastY = 0, speedX = 0, speedY = 0;
 
-window.addEventListener('mousemove', (e) => {
-  speedX = Math.abs(e.clientX - lastX);
-  speedY = Math.abs(e.clientY - lastY);
-  cursor.style.left = e.clientX + 5 + 'px';
-  cursor.style.top = e.clientY + 15 + 'px';
-  const blurValue = `${speedX * 0.3} ${speedY * 0.3}`;
-  blurElement.setAttribute('stdDeviation', blurValue);
-  lastX = e.clientX;
-  lastY = e.clientY;
-});
+  window.addEventListener('mousemove', (e) => {
+    speedX = Math.abs(e.clientX - lastX);
+    speedY = Math.abs(e.clientY - lastY);
+    cursor.style.left = e.clientX + 5 + 'px';
+    cursor.style.top = e.clientY + 15 + 'px';
+    const blurValue = `${speedX * 0.3} ${speedY * 0.3}`;
+    blurElement.setAttribute('stdDeviation', blurValue);
+    lastX = e.clientX;
+    lastY = e.clientY;
+  });
 
-function relax() {
-  speedX *= 0.9;
-  speedY *= 0.9;
-  const blurValue = `${speedX * 0.1} ${speedY * 0.1}`;
-  blurElement.setAttribute('stdDeviation', blurValue);
-  requestAnimationFrame(relax);
+  function relax() {
+    speedX *= 0.9;
+    speedY *= 0.9;
+    const blurValue = `${speedX * 0.1} ${speedY * 0.1}`;
+    blurElement.setAttribute('stdDeviation', blurValue);
+    requestAnimationFrame(relax);
+  }
+  relax();
 }
-relax();
+
+function initMobileNav() {
+  const burger = document.getElementById('navBurger');
+  const nav = document.getElementById('siteNav');
+  const backdrop = document.getElementById('navBackdrop');
+  if (!burger || !nav) return;
+
+  const close = () => {
+    document.body.classList.remove('nav-open');
+    burger.setAttribute('aria-expanded', 'false');
+    if (backdrop) backdrop.setAttribute('aria-hidden', 'true');
+  };
+
+  burger.addEventListener('click', () => {
+    const open = document.body.classList.toggle('nav-open');
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (backdrop) backdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
+  });
+
+  if (backdrop) backdrop.addEventListener('click', close);
+  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  window.addEventListener('resize', () => { if (window.innerWidth > 900) close(); });
+}
+
+initMobileNav();
 
 const roles = ['Дизайнер', 'AI & Web', 'Photoshop', 'Blender', 'After Effects', 'Blockbench', 'Davinchi Resolve', 'AI & Vibe code'];
 const roleBadge = document.querySelector('.role-badge');
@@ -653,6 +437,7 @@ function observeBlockTitleLine(block) {
 }
 
 function createItem(work, index, animated = true) {
+  const galleryIndex = addToLightboxGallery(work);
   const div = document.createElement('div');
   div.className = 'masonry-item' + (animated ? ' ' + workRevealClass(index) : '');
   const img = document.createElement('img');
@@ -660,7 +445,7 @@ function createItem(work, index, animated = true) {
   img.alt = work.title;
   img.loading = 'lazy';
   div.appendChild(img);
-  div.addEventListener('click', () => openLightbox(work.src, work.title));
+  div.addEventListener('click', () => openLightboxAt(galleryIndex));
   return div;
 }
 
@@ -680,7 +465,7 @@ function createWbBlock(group, animated = true) {
 
   const grid = document.createElement('div');
   grid.className = 'masonry masonry--wb';
-  fillMasonryGrid(grid, group.items, 0, animated);
+  fillMasonryGrid(grid, group.items.map(i => ({ ...i, description: group.description || '' })), 0, animated);
   block.appendChild(grid);
   return block;
 }
@@ -699,7 +484,7 @@ function createProjectBlock(group, animated = true) {
 
   const grid = document.createElement('div');
   grid.className = 'masonry';
-  fillMasonryGrid(grid, group.items, 0, animated);
+  fillMasonryGrid(grid, group.items.map(i => ({ ...i, description: group.description || '' })), 0, animated);
   block.appendChild(grid);
   return block;
 }
@@ -744,7 +529,8 @@ function createAvatarkaBlock(group) {
       label.textContent = item.title.replace(/\.[^.]+$/, '').replace(/_/g, ' ');
       cell.appendChild(label);
     }
-    cell.addEventListener('click', () => openLightbox(item.src, item.title));
+    const galleryIndex = addToLightboxGallery({ ...item, description: group.description || '' });
+    cell.addEventListener('click', () => openLightboxAt(galleryIndex));
     grid.appendChild(cell);
   });
 
@@ -752,34 +538,37 @@ function createAvatarkaBlock(group) {
   return block;
 }
 
+let lightboxGallery = [];
+let lightboxIndex = 0;
+
+function resetLightboxGallery() {
+  lightboxGallery = [];
+}
+
+function addToLightboxGallery(work) {
+  lightboxGallery.push({
+    src: work.src,
+    title: work.title,
+    description: work.description || '',
+  });
+  return lightboxGallery.length - 1;
+}
+
 async function renderWorks() {
+  resetLightboxGallery();
   const { singles, groups } = await loadWorks();
   const wbGroups = groups.filter(g => g.layout === 'wb');
   const projectGroups = groups.filter(g => g.layout === 'project');
   const avatarkaGroups = groups.filter(g => g.layout === 'avatarka');
-  const total = totalWorkCount({ singles, groups });
 
   const mainGrid = document.getElementById('mainGrid');
-  const wbBlock = document.getElementById('wbBlock');
-  const wbGrid = document.getElementById('wbGrid');
   const worksMoreBtn = document.getElementById('worksMoreBtn');
 
   if (mainGrid) {
-    const wbCount = wbGroups.reduce((n, g) => n + g.items.length, 0);
-    let remaining = SHOW_ALL_THRESHOLD - wbCount;
+    // Главная: только файлы в корне «работы/», не больше 13 (новые первые — см. index-works.mjs)
+    singles.slice(0, MAIN_SINGLES_LIMIT).forEach((w, i) => mainGrid.appendChild(createItem(w, i)));
 
-    const designToShow = Math.min(singles.length, Math.max(0, remaining));
-    singles.slice(0, designToShow).forEach((w, i) => mainGrid.appendChild(createItem(w, i)));
-    remaining -= designToShow;
-
-    if (wbGrid && wbBlock && wbGroups[0] && wbGroups[0].items.length <= remaining) {
-      wbBlock.className = 'wb-block';
-      wbBlock.style.display = '';
-      fillMasonryGrid(wbGrid, wbGroups[0].items);
-      observeBlockTitleLine(wbBlock);
-    }
-
-    if (worksMoreBtn && total >= SHOW_ALL_THRESHOLD) {
+    if (worksMoreBtn && hasArchivePage({ singles, groups })) {
       worksMoreBtn.style.display = '';
     }
     initReveal();
@@ -816,23 +605,75 @@ renderWorks();
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 const lightboxTitle = document.getElementById('lightboxTitle');
+const lightboxDesc = document.getElementById('lightboxDesc');
 const lightboxClose = document.getElementById('lightboxClose');
 const lightboxBack = document.getElementById('lightboxBackdrop');
+const lightboxPrev = document.getElementById('lightboxPrev');
+const lightboxNext = document.getElementById('lightboxNext');
 
-function openLightbox(src, title) {
-  lightboxImg.src = src;
-  lightboxImg.alt = title;
-  lightboxTitle.textContent = title;
+function updateLightboxNav() {
+  const hasMany = lightboxGallery.length > 1;
+  if (lightboxPrev) lightboxPrev.style.display = hasMany ? '' : 'none';
+  if (lightboxNext) lightboxNext.style.display = hasMany ? '' : 'none';
+}
+
+function showLightboxEntry(entry) {
+  if (!lightbox || !lightboxImg) return;
+  lightboxImg.src = entry.src;
+  lightboxImg.alt = entry.title;
+  if (lightboxTitle) lightboxTitle.textContent = entry.title;
+  if (lightboxDesc) {
+    if (entry.description) {
+      lightboxDesc.textContent = entry.description;
+      lightboxDesc.hidden = false;
+    } else {
+      lightboxDesc.textContent = '';
+      lightboxDesc.hidden = true;
+    }
+  }
+  updateLightboxNav();
+}
+
+function openLightboxAt(index) {
+  if (!lightboxGallery.length) return;
+  lightboxIndex = (index + lightboxGallery.length) % lightboxGallery.length;
+  showLightboxEntry(lightboxGallery[lightboxIndex]);
   lightbox.classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+function stepLightbox(delta) {
+  if (!lightbox?.classList.contains('open') || lightboxGallery.length < 2) return;
+  openLightboxAt(lightboxIndex + delta);
 }
 
 function closeLightbox() {
   lightbox.classList.remove('open');
   document.body.style.overflow = '';
-  setTimeout(() => { lightboxImg.src = ''; }, 300);
+  setTimeout(() => { if (lightboxImg) lightboxImg.src = ''; }, 300);
 }
 
 if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
 if (lightboxBack) lightboxBack.addEventListener('click', closeLightbox);
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+if (lightboxPrev) lightboxPrev.addEventListener('click', e => { e.stopPropagation(); stepLightbox(-1); });
+if (lightboxNext) lightboxNext.addEventListener('click', e => { e.stopPropagation(); stepLightbox(1); });
+
+document.addEventListener('keydown', e => {
+  if (!lightbox?.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') stepLightbox(-1);
+  if (e.key === 'ArrowRight') stepLightbox(1);
+});
+
+let lightboxTouchX = null;
+if (lightbox) {
+  lightbox.addEventListener('touchstart', e => {
+    lightboxTouchX = e.changedTouches[0].clientX;
+  }, { passive: true });
+  lightbox.addEventListener('touchend', e => {
+    if (lightboxTouchX === null) return;
+    const dx = e.changedTouches[0].clientX - lightboxTouchX;
+    if (Math.abs(dx) > 50) stepLightbox(dx > 0 ? -1 : 1);
+    lightboxTouchX = null;
+  }, { passive: true });
+}

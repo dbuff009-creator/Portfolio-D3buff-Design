@@ -65,15 +65,26 @@ async function main() {
 
   for (const ent of entries) {
     if (ent.isDirectory()) {
-      const items = await imagesInFolder(path.join(WORKS_DIR, ent.name), ent.name);
+      const folderPath = path.join(WORKS_DIR, ent.name);
+      const items = await imagesInFolder(folderPath, ent.name);
       if (!items.length) continue;
-      groups.push({ folder: ent.name, ...groupMeta(ent.name), items });
+      let description = '';
+      try {
+        description = (await fs.readFile(path.join(folderPath, 'description.txt'), 'utf8')).trim();
+      } catch { /* нет файла — ок */ }
+      const group = { folder: ent.name, ...groupMeta(ent.name), items };
+      if (description) group.description = description;
+      groups.push(group);
     } else if (isImage(ent.name)) {
-      singles.push({ src: ent.name, title: ent.name });
+      const full = path.join(WORKS_DIR, ent.name);
+      const stat = await fs.stat(full);
+      singles.push({ src: ent.name, title: ent.name, mtime: stat.mtimeMs });
     }
   }
 
-  singles.sort((a, b) => a.src.localeCompare(b.src, 'ru'));
+  // Новые файлы в корне — первыми (на главной показываются первые 13)
+  singles.sort((a, b) => b.mtime - a.mtime);
+  singles.forEach(s => delete s.mtime);
   groups.sort((a, b) => a.folder.localeCompare(b.folder, 'ru'));
 
   const manifest = { updatedAt: new Date().toISOString(), singles, groups };
