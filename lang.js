@@ -21,6 +21,7 @@
   var langTriggerText = document.getElementById('langTriggerText');
   var langMenu = document.getElementById('langMenu');
   var menuOpen = false;
+  var switching = false;
 
   function flagUrl(code) {
     var lang = LANGUAGES.find(function (l) { return l.code === code; });
@@ -48,7 +49,8 @@
   function isPageTranslated() {
     return document.body.classList.contains('translated-ltr')
       || document.body.classList.contains('translated-rtl')
-      || root.classList.contains('translated-ltr');
+      || root.classList.contains('translated-ltr')
+      || root.classList.contains('translated-rtl');
   }
 
   function langFromCookie() {
@@ -56,39 +58,65 @@
     if (!m || !m[1]) return null;
     var parts = decodeURIComponent(m[1]).split('/');
     var lang = parts[2];
-    if (lang && LANGUAGES.some(function (l) { return l.code === lang; })) return lang;
+    if (!lang || lang === DEFAULT_LANG) return null;
+    if (LANGUAGES.some(function (l) { return l.code === lang; })) return lang;
     return null;
   }
 
   function getPageLang() {
-    if (!isPageTranslated()) return DEFAULT_LANG;
-    var combo = document.querySelector('.goog-te-combo');
-    if (combo && combo.value && LANGUAGES.some(function (l) { return l.code === combo.value; })) {
-      return combo.value;
+    var fromCookie = langFromCookie();
+    if (fromCookie) return fromCookie;
+
+    if (isPageTranslated()) {
+      var combo = document.querySelector('.goog-te-combo');
+      if (combo && combo.value && combo.value !== DEFAULT_LANG
+          && LANGUAGES.some(function (l) { return l.code === combo.value; })) {
+        return combo.value;
+      }
     }
-    return langFromCookie() || DEFAULT_LANG;
+
+    try {
+      var saved = sessionStorage.getItem(LANG_KEY);
+      if (saved && saved !== DEFAULT_LANG
+          && LANGUAGES.some(function (l) { return l.code === saved; })) {
+        return saved;
+      }
+    } catch (e) {}
+
+    return DEFAULT_LANG;
   }
 
   function rememberLang(lang) {
-    try { sessionStorage.setItem(LANG_KEY, lang); } catch (e) {}
+    try {
+      if (lang === DEFAULT_LANG) sessionStorage.removeItem(LANG_KEY);
+      else sessionStorage.setItem(LANG_KEY, lang);
+    } catch (e) {}
   }
 
   function clearGtCookie() {
     var exp = 'Thu, 01 Jan 1970 00:00:01 GMT';
-    document.cookie = 'googtrans=;expires=' + exp + ';path=/';
-    var host = location.hostname;
-    if (host) {
-      document.cookie = 'googtrans=;expires=' + exp + ';path=/;domain=' + host;
-      document.cookie = 'googtrans=;expires=' + exp + ';path=/;domain=.' + host;
+    var paths = ['/', location.pathname, location.pathname.replace(/\/[^/]*$/, '/') || '/'];
+    var hosts = [''];
+    if (location.hostname) {
+      hosts.push(location.hostname, '.' + location.hostname);
     }
+
+    paths.forEach(function (p) {
+      hosts.forEach(function (h) {
+        var base = 'googtrans=;expires=' + exp + ';path=' + p;
+        document.cookie = base;
+        if (h) document.cookie = base + ';domain=' + h;
+      });
+    });
   }
 
   function setGtCookie(lang) {
+    clearGtCookie();
+    if (lang === DEFAULT_LANG) return;
     var val = '/ru/' + lang;
     document.cookie = 'googtrans=' + val + ';path=/';
-    var host = location.hostname;
-    if (host) {
-      document.cookie = 'googtrans=' + val + ';path=/;domain=' + host;
+    if (location.hostname) {
+      document.cookie = 'googtrans=' + val + ';path=/;domain=' + location.hostname;
     }
   }
 
@@ -169,30 +197,75 @@
     }
   }
 
+  function resetComboToOriginal() {
+    var combo = document.querySelector('.goog-te-combo');
+    if (!combo || !combo.options.length) return false;
+    try {
+      var i;
+      for (i = 0; i < combo.options.length; i++) {
+        if (combo.options[i].value === '') {
+          combo.selectedIndex = i;
+          break;
+        }
+      }
+      if (combo.value !== '') {
+        combo.selectedIndex = 0;
+        combo.value = '';
+      }
+      fireEvent(combo, 'change');
+      fireEvent(combo, 'change');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function clickShowOriginal() {
+    var frames = document.querySelectorAll('.goog-te-banner-frame, iframe.skiptranslate');
+    for (var i = 0; i < frames.length; i++) {
+      try {
+        var doc = frames[i].contentDocument || frames[i].contentWindow.document;
+        if (!doc) continue;
+        var restore = doc.getElementById(':1.restore')
+          || doc.querySelector('[id$=".restore"]');
+        if (restore) {
+          restore.click();
+          return true;
+        }
+      } catch (e) { /* cross-origin */ }
+    }
+    return false;
+  }
+
+  /** Вернуть оригинал через reload — без него GT часто ломает вёрстку. */
   function resetToRussian() {
-    clearGtCookie();
-    rememberLang(DEFAULT_LANG);
+    if (switching) return;
+    switching = true;
     setLoading(true);
     closeMenu();
 
-    var combo = document.querySelector('.goog-te-combo');
-    if (combo) {
-      combo.value = '';
-      fireEvent(combo, 'change');
-      fireEvent(combo, 'change');
+    clearGtCookie();
+    rememberLang(DEFAULT_LANG);
+
+    if (location.hash && /googtrans/i.test(location.hash)) {
+      history.replaceState(null, '', location.pathname + location.search);
     }
 
+    try {
+      clickShowOriginal();
+      resetComboToOriginal();
+    } catch (e) {}
+
     setTimeout(function () {
-      if (isPageTranslated()) {
-        location.reload();
-        return;
-      }
-      setLoading(false);
-      updateUI(DEFAULT_LANG);
-    }, 500);
+      clearGtCookie();
+      rememberLang(DEFAULT_LANG);
+      location.reload();
+    }, 80);
   }
 
   function applyViaCombo(lang) {
+    if (switching) return;
+    switching = true;
     setLoading(true);
     var attempts = 0;
 
@@ -203,6 +276,7 @@
         fireEvent(combo, 'change');
         fireEvent(combo, 'change');
         setTimeout(function () {
+          switching = false;
           setLoading(false);
           updateUI(lang);
         }, 450);
@@ -212,18 +286,20 @@
         setTimeout(tick, 120);
         return;
       }
-      location.reload();
+      switching = false;
+      setLoading(false);
+      updateUI(lang);
     }
 
     tick();
   }
 
   function switchLang(lang) {
-    if (!lang) return;
+    if (!lang || switching) return;
     var pageLang = getPageLang();
 
     if (lang === DEFAULT_LANG) {
-      if (!isPageTranslated() && pageLang === DEFAULT_LANG) {
+      if (!isPageTranslated() && !langFromCookie() && pageLang === DEFAULT_LANG) {
         updateUI(DEFAULT_LANG);
         rememberLang(DEFAULT_LANG);
         return;
@@ -232,7 +308,10 @@
       return;
     }
 
-    if (lang === pageLang) return;
+    if (lang === pageLang && isPageTranslated()) {
+      updateUI(lang);
+      return;
+    }
 
     setGtCookie(lang);
     rememberLang(lang);

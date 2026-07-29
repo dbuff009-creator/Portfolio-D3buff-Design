@@ -1,18 +1,10 @@
 // Автоматически: обновить-работы.bat
 window.WORKS_DATA = {
-  "updatedAt": "2026-06-05T01:58:54.517Z",
+  "updatedAt": "2026-07-29T15:17:18.792Z",
   "singles": [
     {
       "src": "Russian Roleplay.png",
       "title": "Russian Roleplay.png"
-    },
-    {
-      "src": "bb.jpg",
-      "title": "bb.jpg"
-    },
-    {
-      "src": "22323.png",
-      "title": "22323.png"
     },
     {
       "src": "QRposter.jpg",

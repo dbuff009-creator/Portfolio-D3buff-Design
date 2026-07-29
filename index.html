@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=8" />
+  <link rel="stylesheet" href="style.css?v=85" />
 </head>
 <body>
 
@@ -65,29 +65,44 @@
   </header>
 
   <!-- HERO -->
-  <section class="hero section" id="hero">
-    <div class="container hero__inner">
-      <div class="hero__text">
-        <p class="hero__sub reveal reveal--fade">Привет, я <span style="display: inline-block; transform: scaleX(2); margin: 0 11px;">—</span></p>
-        <h1 class="hero__name reveal reveal--up delay-1">Артём </h1><h1 class="hero__name red reveal reveal--up delay-2 notranslate">D3buff</h1>
-        <div class="hero__role reveal reveal--fade delay-2">
-          <div class="role-badge"></div>
-        </div>
-        <p class="hero__desc reveal reveal--up delay-3">
-          Специализируюсь на визуале, но умею заставлять технологии работать на результат.<br/>
-          Мой подход — это микс <span style="color: var(--red);">идей</span> и <span style="color: var(--red);">лучшего подхода </span>к задаче.
-        </p>
-        <a href="#works" class="btn reveal reveal--up delay-4">Смотреть работы</a>
-      </div>
-<div class="hero__ferret reveal reveal--right delay-2">
-  <img id="ferret-target" src="images/Xorek.png" alt="Хорёк" class="ferret-img" />
-</div>
+  <section class="hero" id="hero">
+    <div class="hero__sky-wrap">
+      <img class="hero__sky" src="images/sky.png" alt="" />
+    </div>
+    <p class="hero__year notranslate" translate="no" id="heroYear">2026.</p>
+    <p class="hero__folio-label">.ПОРТФОЛИО</p>
 
+    <div class="hero__ferret">
+      <img src="images/hero-ferret.png" alt="Хорёк" class="ferret-img" />
+    </div>
+
+    <div class="hero__name-wrap">
+      <span class="hero__name-plate notranslate" aria-hidden="true">Артём</span>
+      <div class="hero__name-mask">
+        <h1 class="hero__name notranslate" translate="no">Артём</h1>
+      </div>
+    </div>
+    <div class="hero__tri-wrap" aria-hidden="true">
+      <img class="hero__tri" src="images/tringle.png" alt="" />
+    </div>
+    <div class="hero__handle-mask">
+      <p class="hero__handle notranslate" translate="no">D3BUFF</p>
+    </div>
+    <a href="#works" class="hero__cta">
+      <span class="hero__cta-arrow notranslate" translate="no">↓</span>
+      <span class="hero__cta-label">СМОТРЕТЬ РАБОТЫ</span>
+    </a>
+    <p class="hero__role">Graphic Designer</p>
+
+    <div class="hero__marquee notranslate" aria-hidden="true" translate="no">
+      <div class="hero__marquee-track">
+        <span>DaVinci Resolve • Adobe Photoshop • Adobe Illustrator • Figma • After Effects • AI \ VIBE CODE • HTML \ CSS</span>
+        <span>DaVinci Resolve • Adobe Photoshop • Adobe Illustrator • Figma • After Effects • AI \ VIBE CODE • HTML \ CSS</span>
+      </div>
     </div>
   </section>
 
-  <div class="section-divider"><img src="images/gif.gif" alt="" class="section-divider__gif"></div>
-
+  <div class="section-divider section-divider--after-hero"><img src="images/gif.gif" alt="" class="section-divider__gif"></div>
   <!-- ABOUT -->
   <section class="about section" id="about">
     <div class="container">
@@ -99,7 +114,7 @@
         <p class="about__bio">
           Меня зовут Артём, я мультидисциплинарный дизайнер, который превращает идеи в выразительный визуальный продукт. В работе использую Photoshop, Blender и After Effects, создавая всё: от стильных постеров и PFP до графики для маркетплейсов и моушн-дизайна. Помимо визуала, я занимаюсь разработкой сайтов, где применяю нейросети для написания и оптимизации кода. Такой подход позволяет мне совмещать чистую эстетику с технической логикой, создавая качественные и современные цифровые решения.
         </p>
-        <p class="about__sub">14 лет · дизайнер · всегда на связи</p>
+        <p class="about__sub"><span id="aboutAge">14</span> лет · дизайнер · всегда на связи</p>
       </div>
 
       <div class="about__divider"></div>
@@ -110,7 +125,7 @@
           <p>Photoshop</p>
           <p>Blender / Blockbench</p>
           <p>After Effects</p>
-          <p>HTML / CSS <span class="htmlCssNote" style="color: #c7c7c7;">(онли ИИ)</span></p>
+          <p>HTML / CSS <span class="htmlCssNote" style="color: #c7c7c7;">(с помощью AI)</span></p>
           <p>AI-инструменты</p>
         </div>
         <div class="about__col">
@@ -173,7 +188,7 @@
             <div class="skill-row__icon" style="background:#e34c26">
               <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/html5.svg" alt="HTML5" class="skill-icon-img" style="filter:invert(1)">
             </div>
-            <span class="skill-row__name">HTML / CSS <br><span class="html_Note" style="color: #c7c7c7; font-size: 12.5px;"> (Онли c ИИ)</span> </span>
+            <span class="skill-row__name">HTML / CSS <br><span class="html_Note" style="color: #c7c7c7; font-size: 12.5px;"> (с помощью AI)</span> </span>
             <span class="skill-row__stars">★★★<span class="skill-star-off"><span class="skill-star-half">★</span>★</span></span>
             <span class="skill-row__label">Средний</span>
           </div>
@@ -228,7 +243,7 @@
       <h2 class="section-title reveal reveal--up">Работы</h2>
       <p class="section-sub">Избранные проекты — постеры, баннеры, ассеты и не только</p>
 
-      <div class="masonry" id="mainGrid"></div>
+      <div class="masonry masonry--bleed" id="mainGrid"></div>
 
       <!-- Кнопка: если работ больше 11 или есть папки — см. jobs.html -->
       <div class="works__more" id="worksMoreBtn" style="display:none">
@@ -330,10 +345,32 @@
 
   <div class="section-divider_Footer"><img src="images/gifB.gif" alt="" class="section-divider__gif_F"></div>
 
+  <div class="footer-rule" aria-hidden="true"></div>
+
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="container footer__inner">
-      <span>© 2026 D3buff. Все права защищены. <p>Отдельная благодарность <span style="color:rgba(255,255,255,0.75);font-weight:300;">Kiro AI</span> <span style="font-weight: 900; margin: 6px;"> · </span> Сайт был за 3 дня</p></span>
+    <div class="footer__grid">
+      <div class="footer__cell footer__cell--media">
+        <div class="footer__slideshow" id="footerSlideshow" aria-hidden="true"></div>
+        <img class="footer__thx" src="images/thx.png" alt="" aria-hidden="true" />
+      </div>
+      <div class="footer__cell footer__cell--copy">
+        <div class="footer__copy">
+          <p class="footer__brand notranslate">D3BUFF<span>.</span></p>
+          <p class="footer__line">© <span id="footerYear">2026</span> · Все права защищены</p>
+          <p class="footer__thanks">
+            Сайт сделан с помощью
+            <span class="notranslate">Kiro / Cursor AI</span>
+            <span class="footer__dot">·</span>
+            <a href="https://dbuff009-creator.github.io/Link.bio.D3buff/" target="_blank" rel="noopener noreferrer">Соц-сети автора</a>
+          </p>
+          <div class="footer__links">
+            <a href="#contact">Контакт</a>
+            <a href="#works">Работы</a>
+            <a href="jobs.html">Все работы</a>
+          </div>
+        </div>
+      </div>
     </div>
   </footer>
 
@@ -368,8 +405,9 @@
   };
   </script>
   <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  <script src="lang.js?v=1"></script>
+  <script src="lang.js?v=4"></script>
+  <script src="hero-edit.js?v=15"></script>
   <script src="works-data.js?v=3"></script>
-  <script src="script.js?v=4"></script>
+  <script src="script.js?v=26"></script>
 </body>
 </html>

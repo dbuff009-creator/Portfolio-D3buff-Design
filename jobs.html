@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=8" />
+  <link rel="stylesheet" href="style.css?v=85" />
 </head>
 <body>
 
@@ -74,7 +74,7 @@
     <div class="container">
       <div class="jobs-group">
         <h2 class="jobs-group__title"><span style="color: red; display: inline-block; transform: scaleX(1.2); margin: 0 5px;">—</span>Дизайн</h2>
-        <div class="masonry" id="jobsMasonry"></div>
+        <div class="masonry masonry--bleed" id="jobsMasonry"></div>
       </div>
       <div id="jobsExtra"></div>
 
@@ -84,10 +84,25 @@
     </div>
   </section>
 
+  <div class="footer-rule" aria-hidden="true"></div>
+
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="container footer__inner">
-      <span>© 2026 D3buff. Все права защищены.</span>
+    <div class="footer__grid">
+      <div class="footer__cell footer__cell--media">
+        <div class="footer__slideshow" id="footerSlideshow" aria-hidden="true"></div>
+        <img class="footer__thx" src="images/thx.png" alt="" aria-hidden="true" />
+      </div>
+      <div class="footer__cell footer__cell--copy">
+        <div class="footer__copy">
+          <p class="footer__brand notranslate">D3BUFF<span>.</span></p>
+          <p class="footer__line">© <span id="footerYear">2026</span> · Все права защищены</p>
+          <div class="footer__links">
+            <a href="index.html#contact">Контакт</a>
+            <a href="index.html">На главную</a>
+          </div>
+        </div>
+      </div>
     </div>
   </footer>
 
@@ -122,8 +137,8 @@
   };
   </script>
   <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  <script src="lang.js?v=1"></script>
+  <script src="lang.js?v=4"></script>
   <script src="works-data.js?v=3"></script>
-  <script src="script.js?v=4"></script>
+  <script src="script.js?v=25"></script>
 </body>
 </html>
