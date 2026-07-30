@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=85" />
+  <link rel="stylesheet" href="css/style.css?v=135" />
 </head>
 <body>
 
@@ -37,24 +37,23 @@
     <div class="container header__inner">
       <a href="javascript:void(0)" class="logo notranslate">Debuff<span class="logo-dot">.</span></a>
       <nav class="nav" id="siteNav">
+        <span class="nav__indicator" aria-hidden="true"></span>
         <a href="#about">Обо мне</a>
         <a href="#skills">Навыки</a>
         <a href="#works">Работы</a>
         <a href="#contact">Контакт</a>
       </nav>
       <div class="header-controls">
-        <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
-          <svg class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
+          <svg class="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M12 3V4M12 20V21M4 12H3M6.31412 6.31412L5.5 5.5M17.6859 6.31412L18.5 5.5M6.31412 17.69L5.5 18.5M17.6859 17.69L18.5 18.5M21 12H20M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
-        <div class="lang-wrap notranslate" id="langWrap">
-          <button type="button" class="lang-trigger" id="langTrigger" aria-label="Выбрать язык" aria-haspopup="listbox" aria-expanded="false">
-            <img class="lang-flag" id="langTriggerFlag" src="" alt="" width="18" height="18" draggable="false">
-            <span class="lang-trigger-text" id="langTriggerText"></span>
-            <svg class="lang-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-          </button>
-          <ul class="lang-menu" id="langMenu" role="listbox"></ul>
+        <span class="header-controls__divider" aria-hidden="true"></span>
+        <div class="lang-toggle notranslate" id="langWrap" role="group" aria-label="Язык">
+          <span class="lang-toggle__thumb" aria-hidden="true"></span>
+          <button type="button" class="lang-toggle__opt" data-lang="ru" aria-pressed="true">RU</button>
+          <button type="button" class="lang-toggle__opt" data-lang="en" aria-pressed="false">EN</button>
         </div>
       </div>
       <button class="nav-burger" id="navBurger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="siteNav">
@@ -92,7 +91,9 @@
       <span class="hero__cta-arrow notranslate" translate="no">↓</span>
       <span class="hero__cta-label">СМОТРЕТЬ РАБОТЫ</span>
     </a>
-    <p class="hero__role">Graphic Designer</p>
+    <div class="hero__role-mask">
+      <p class="hero__role">Graphic Designer</p>
+    </div>
 
     <div class="hero__marquee notranslate" aria-hidden="true" translate="no">
       <div class="hero__marquee-track">
@@ -103,135 +104,169 @@
   </section>
 
   <div class="section-divider section-divider--after-hero"><img src="images/gif.gif" alt="" class="section-divider__gif"></div>
-  <!-- ABOUT -->
+
+  <!-- ABOUT + SKILLS (bento) -->
   <section class="about section" id="about">
+    <svg class="about__scribble" viewBox="0 0 397 1080" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true">
+            <path pathLength="1" d="M453.97 -48.4687C435.94 -47.1891 420.391 -43.3116 375.887 -23.4588C333.994 -4.77051 252.689 30.9424 203.155 53.8778C153.62 76.8132 138.265 85.7702 122.677 97.1022C90.6193 120.408 68.8769 140.831 56.9342 149.865C43.5425 159.996 28.8418 178.869 17.1317 205.42C11.0599 219.187 13.8746 238.35 16.4435 251.678C18.6695 263.228 33.8437 270.106 58.3301 281.39C68.7928 286.211 85.9185 288.796 108.883 291.093C131.847 293.391 160.638 294.03 189.225 290.521C217.811 287.012 245.322 279.335 273.25 269.941C301.178 260.548 328.688 249.672 354.057 237.031C403.038 212.625 428.728 192.615 435.824 185.848C452.615 169.837 468.705 128.81 477.545 108.618C482.76 96.7089 483.051 87.2824 479.843 79.1978C474.477 65.6791 456.607 67.8562 442.095 66.247C409.615 62.6453 396.506 70.4153 385.513 77.2009C371.821 85.6526 355.172 92.3619 335.784 101.106C325.403 105.788 297.804 125.844 261.957 152.977C238.944 170.395 227.835 177.046 219.411 181.903C211.764 186.312 201.351 192.556 190.02 201.591C177.644 211.458 170.293 222.258 161.898 230.682C154.125 238.482 129.114 271.153 103.784 307.495C82.0679 338.652 73.3554 348.277 62.4015 363.108C38.8355 395.016 37.1784 416.094 34.881 428.104C32.8565 438.688 35.8213 455.528 43.2467 465.27C51.2426 475.761 66.8024 482.05 81.3527 488.865C88.2752 492.107 102.941 496.3 127.107 499.208C153.025 502.327 173.434 498.917 191.125 493.46C219.316 484.763 240.01 473.713 250.324 470.495C271.095 464.014 306.354 444.128 333.7 427.213C356.527 413.093 387.316 396.862 407.353 383.93C434.889 366.159 443.579 350.991 452.642 341.578C464.414 329.353 466.223 318.652 469.151 309.589C470.932 304.073 470.12 298.586 469.49 295.358C465.762 276.262 421.709 295.31 411.037 298.237C391.528 303.589 355.249 321.095 337.694 333.106C331.345 337.449 322.833 343.119 313.479 349.895C306.287 355.105 283.554 374.004 253.194 402.096C229.036 424.449 214.264 444.555 205.52 458.785C198.362 470.434 185.88 492.907 175.14 508.243C165.243 522.373 151.564 540.872 142.84 553.454C130.615 571.085 123.142 585.424 112.47 604.812C102.734 622.497 96 636.452 90.145 667.423C85.0134 694.568 90.7653 714.079 93.9837 719.236C103.407 734.337 126.244 744.44 144.343 746.737C149.497 747.392 155.287 747.697 173.928 747.387C192.569 747.077 223.918 745.797 242.947 744.498C267.81 742.801 290.941 733.564 334.068 713.944C360.24 702.037 393.83 683.447 419.296 667.501C444.761 651.555 460.756 638.119 472.194 626.719C504.417 594.606 504.378 569.41 503.418 558.757C502.342 546.807 481.849 544.168 464.052 540.6C455.842 538.955 448.193 536.393 438.858 535.424C426.386 534.129 400.519 545.331 361.211 570.438C339.694 584.181 318.064 604.501 294.053 626.545C270.041 648.588 245.09 672.9 222.319 692.782C199.548 712.664 179.715 727.379 164.699 740.078C139.012 761.802 126.361 778.678 116.066 794.111C99.4505 819.018 90.1449 841.358 86.2868 854.241C77.7609 882.711 74.635 897.562 73.6559 909.873C73.0898 916.992 72.0371 927.303 72.6768 938.276C73.1069 945.652 77.8339 949.967 82.9813 954.474C90.2317 960.824 103.619 967.396 131.256 973.532C150.249 977.749 180.646 976.469 199.655 976.159C218.664 975.849 225.702 974.569 240.844 969.752C279.314 957.511 308.506 944.209 320.429 936.793C332.55 929.254 345.342 924.802 362.704 915.496C393.756 898.852 417.056 873.813 430.288 858.972C450.351 836.469 457.189 805.317 456.888 791.057C456.739 783.999 448.193 779.396 440.777 776.168C434.312 773.354 426.227 773.56 417.202 773.88C408.132 774.201 380.531 788.295 339.555 813.44C306.816 833.532 293.093 854.29 285.038 864.284C268.635 884.634 254.977 905.938 241.086 929.212C233.334 942.2 224.616 960.862 210.764 986.299C202.941 1000.66 194.992 1018.77 188.788 1033.12C182.584 1047.47 178.746 1057.7 172.929 1077.05C158.714 1124.34 150.886 1158.03 149.917 1166.74C148.229 1181.89 147.648 1201.25 152.146 1216.2C163.119 1229.79 173.472 1236.26 178.629 1239.48C181.227 1241.42 183.786 1243.98 190.301 1248.55" stroke="#5E97FF" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
     <div class="container">
+      <h2 class="about-heading reveal reveal--up">
+        <span class="about-heading__bar" aria-hidden="true"></span>
+        <span class="about-heading__text">обо <span class="about-heading__me">мне</span></span>
+      </h2>
 
-      <h2 class="section-title reveal reveal--up">Обо мне</h2>
-      <p class="section-sub">Кто я, чем занимаюсь и что умею</p>
+      <div class="about-bento">
+        <div class="about-bento__col about-bento__col--left">
+          <article class="about-card about-card--bio reveal reveal--up">
+            <p class="about-card__bio">
+              Меня зовут Артём, я <span class="about-card__hl">мультимедийный дизайнер</span>, который превращает идеи в выразительный визуальный продукт. В работе использую Photoshop, Blender и After Effects, <span class="about-card__hl">создавая всё</span>: от стильных постеров и PFP до графики для маркетплейсов и моушн-дизайна.
+            </p>
+          </article>
 
-      <div class="about__body">
-        <p class="about__bio">
-          Меня зовут Артём, я мультидисциплинарный дизайнер, который превращает идеи в выразительный визуальный продукт. В работе использую Photoshop, Blender и After Effects, создавая всё: от стильных постеров и PFP до графики для маркетплейсов и моушн-дизайна. Помимо визуала, я занимаюсь разработкой сайтов, где применяю нейросети для написания и оптимизации кода. Такой подход позволяет мне совмещать чистую эстетику с технической логикой, создавая качественные и современные цифровые решения.
-        </p>
-        <p class="about__sub"><span id="aboutAge">14</span> лет · дизайнер · всегда на связи</p>
+          <article class="about-card about-card--bio reveal reveal--up delay-1">
+            <p class="about-card__bio">
+              Помимо визуала, я <span class="about-card__hl">занимаюсь разработкой сайтов</span>, где применяю нейросети для написания и оптимизации кода. Такой подход позволяет мне совмещать чистую эстетику с технической логикой, создавая качественные и современные цифровые решения.
+            </p>
+          </article>
+
+          <p class="about-tagline reveal reveal--up delay-2">
+            <span class="about-tagline__bar" aria-hidden="true"></span>
+            <span class="about-tagline__text"><span id="aboutAge">14</span> лет · дизайнер · всегда на связи</span>
+          </p>
+        </div>
+
+        <div class="about-bento__col about-bento__col--right">
+          <div class="about-bento__panel reveal reveal--up delay-1">
+            <article class="about-card about-card--meta">
+              <div class="about-card__split">
+                <div>
+                  <p class="about-card__label">Софт</p>
+                  <ul class="about-card__list">
+                    <li>Photoshop</li>
+                    <li>Blender</li>
+                    <li>After Effects</li>
+                    <li>HTML / CSS</li>
+                  </ul>
+                </div>
+                <div>
+                  <p class="about-card__label">Качества</p>
+                  <ul class="about-card__list">
+                    <li>Внимание к деталям</li>
+                    <li>Ответственность</li>
+                    <li>Креатив</li>
+                    <li>Трудолюбие</li>
+                  </ul>
+                </div>
+              </div>
+              <p class="about-card__label about-card__label--spaced">Языки</p>
+              <ul class="about-card__list about-card__list--inline">
+                <li>Русский</li>
+                <li>|</li>
+                <li>
+                  <a class="englishLevel" href="https://cert.efset.org/ru/score/quickcheck/15">English A1/A2</a>
+                </li>
+              </ul>
+            </article>
+
+            <article class="about-card about-card--skills" id="skills">
+              <p class="about-card__label">Навыки</p>
+              <div class="skill-table">
+                <div class="skill-list">
+                  <div class="skill-row">
+                    <div class="skill-row__icon" style="background:#001e36">
+                      <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/adobephotoshop.svg" alt="" class="skill-icon-img" style="filter:invert(1)">
+                    </div>
+                    <div class="skill-row__body">
+                      <span class="skill-row__name">Photoshop</span>
+                      <div class="skill-row__bar" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-label="Photoshop">
+                        <span class="skill-row__bar-fill" style="--level:100%"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="skill-row">
+                    <div class="skill-row__icon" style="background:#10a37f">
+                      <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/openai.svg" alt="" class="skill-icon-img" style="filter:invert(1)">
+                    </div>
+                    <div class="skill-row__body">
+                      <span class="skill-row__name">ChatGPT / AI</span>
+                      <div class="skill-row__bar" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" aria-label="ChatGPT AI">
+                        <span class="skill-row__bar-fill" style="--level:80%"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="skill-row">
+                    <div class="skill-row__icon" style="background:#229ed9">
+                      <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/telegram.svg" alt="" class="skill-icon-img" style="filter:invert(1)">
+                    </div>
+                    <div class="skill-row__body">
+                      <span class="skill-row__name">Клиенты</span>
+                      <div class="skill-row__bar" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" aria-label="Клиенты">
+                        <span class="skill-row__bar-fill" style="--level:80%"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="skill-row">
+                    <div class="skill-row__icon" style="background:#e34c26">
+                      <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/html5.svg" alt="" class="skill-icon-img" style="filter:invert(1)">
+                    </div>
+                    <div class="skill-row__body">
+                      <span class="skill-row__name">HTML / CSS</span>
+                      <div class="skill-row__bar" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70" aria-label="HTML CSS">
+                        <span class="skill-row__bar-fill" style="--level:70%"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="skill-row">
+                    <div class="skill-row__icon" style="background:#e87d0d">
+                      <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/blender.svg" alt="" class="skill-icon-img" style="filter:invert(1)">
+                    </div>
+                    <div class="skill-row__body">
+                      <span class="skill-row__name">Blender</span>
+                      <div class="skill-row__bar" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" aria-label="Blender">
+                        <span class="skill-row__bar-fill" style="--level:60%"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="skill-row">
+                    <div class="skill-row__icon" style="background:#00005b">
+                      <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/adobeaftereffects.svg" alt="" class="skill-icon-img" style="filter:invert(1)">
+                    </div>
+                    <div class="skill-row__body">
+                      <span class="skill-row__name">After Effects</span>
+                      <div class="skill-row__bar" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-label="After Effects">
+                        <span class="skill-row__bar-fill" style="--level:50%"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="skill-row">
+                    <div class="skill-row__icon" style="background:#1a1a2e">
+                      <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/figma.svg" alt="" class="skill-icon-img" style="filter:invert(1)">
+                    </div>
+                    <div class="skill-row__body">
+                      <span class="skill-row__name">Figma</span>
+                      <div class="skill-row__bar" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" aria-label="Figma">
+                        <span class="skill-row__bar-fill" style="--level:40%"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="skill-row">
+                    <div class="skill-row__icon" style="background:#ff7c00">
+                      <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/adobeillustrator.svg" alt="" class="skill-icon-img" style="filter:invert(1)">
+                    </div>
+                    <div class="skill-row__body">
+                      <span class="skill-row__name">Illustrator</span>
+                      <div class="skill-row__bar" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30" aria-label="Illustrator">
+                        <span class="skill-row__bar-fill" style="--level:30%"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
       </div>
-
-      <div class="about__divider"></div>
-
-      <div class="about__cols3">
-        <div class="about__col">
-          <p class="about__col-title">Софт</p>
-          <p>Photoshop</p>
-          <p>Blender / Blockbench</p>
-          <p>After Effects</p>
-          <p>HTML / CSS <span class="htmlCssNote" style="color: #c7c7c7;">(с помощью AI)</span></p>
-          <p>AI-инструменты</p>
-        </div>
-        <div class="about__col">
-          <p class="about__col-title">Личные качества</p>
-          <p>Внимание к деталям</p>
-          <p>Вижу стиль компании</p>
-          <p>Ответственность</p>
-          <p>Креативное мышление</p>
-          <p>Трудолюбивый</p>
-        </div>
-        <div class="about__col">
-          <p class="about__col-title">Языки</p>
-          <p>Русский (родной)</p>
-          <a class = "englishLevel" href="https://cert.efset.org/ru/score/quickcheck/15" style="text-decoration: none; font-style: italic; color: #503838;">Англиский A1/A2 Начальный </a> <span class = "testby" style="color: #c7c7c7; font-size: 12px;">тест от efset.org</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <div class="section-divider"><img src="images/gif.gif" alt="" class="section-divider__gif"></div>
-
-  <!-- SKILLS -->
-  <section class="skills section" id="skills">
-    <div class="container">
-      <h2 class="section-title reveal reveal--up">Навыки</h2>
-      <p class="section-sub">Инструменты, с которыми я работаю каждый день</p>
-
-      <div class="skill-table">
-        <div class="skill-list">
-
-          <div class="skill-row">
-            <div class="skill-row__icon" style="background:#001e36">
-              <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/adobephotoshop.svg" alt="Photoshop" class="skill-icon-img" style="filter:invert(1)">
-            </div>
-            <span class="skill-row__name">Photoshop</span>
-            <span class="skill-row__stars">★★★★★</span>
-            <span class="skill-row__label">Эксперт</span>
-          </div>
-
-          <div class="skill-row">
-            <div class="skill-row__icon" style="background:#e87d0d">
-              <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/blender.svg" alt="Blender" class="skill-icon-img" style="filter:invert(1)">
-            </div>
-            <span class="skill-row__name">Blender / Blockbench</span>
-            <span class="skill-row__stars">★★★<span class="skill-star-off">★★</span></span>
-            <span class="skill-row__label">Средний</span>
-          </div>
-
-          <div class="skill-row">
-            <div class="skill-row__icon" style="background:#00005b">
-              <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/adobeaftereffects.svg" alt="After Effects" class="skill-icon-img" style="filter:invert(1)">
-            </div>
-            <span class="skill-row__name">After Effects</span>
-            <span class="skill-row__stars">★★<span class="skill-star-off"><span class="skill-star-half">★</span>★★</span></span>
-            <span class="skill-row__label">Базовый</span>
-          </div>
-
-          <div class="skill-row">
-            <div class="skill-row__icon" style="background:#e34c26">
-              <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/html5.svg" alt="HTML5" class="skill-icon-img" style="filter:invert(1)">
-            </div>
-            <span class="skill-row__name">HTML / CSS <br><span class="html_Note" style="color: #c7c7c7; font-size: 12.5px;"> (с помощью AI)</span> </span>
-            <span class="skill-row__stars">★★★<span class="skill-star-off"><span class="skill-star-half">★</span>★</span></span>
-            <span class="skill-row__label">Средний</span>
-          </div>
-
-          <div class="skill-row">
-            <div class="skill-row__icon" style="background:#10a37f">
-              <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/openai.svg" alt="OpenAI" class="skill-icon-img" style="filter:invert(1)">
-            </div>
-            <span class="skill-row__name">ChatGPT / AI Tools</span>
-            <span class="skill-row__stars">★★★★<span class="skill-star-off">★</span></span>
-            <span class="skill-row__label">Продвинутый</span>
-          </div>
-
-          <div class="skill-row">
-            <div class="skill-row__icon" style="background:#ff7c00">
-              <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/adobeillustrator.svg" alt="Illustrator" class="skill-icon-img" style="filter:invert(1)">
-            </div>
-            <span class="skill-row__name">Adobe Illustrator</span>
-            <span class="skill-row__stars">★<span class="skill-star-off"><span class="skill-star-half">★</span>★★★</span></span>
-            <span class="skill-row__label">Низкий</span>
-          </div>
-
-          <div class="skill-row">
-            <div class="skill-row__icon" style="background:#1a1a2e">
-              <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/figma.svg" alt="Figma" class="skill-icon-img" style="filter:invert(1)">
-            </div>
-            <span class="skill-row__name">Figma</span>
-            <span class="skill-row__stars">★★<span class="skill-star-off">★★★</span></span>
-            <span class="skill-row__label">Базовый</span>
-          </div>
-
-          <div class="skill-row">
-            <div class="skill-row__icon" style="background:#229ed9">
-              <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/telegram.svg" alt="Telegram" class="skill-icon-img" style="filter:invert(1)">
-            </div>
-            <span class="skill-row__name">Работа с клиентами</span>
-            <span class="skill-row__stars">★★★★<span class="skill-star-off">★</span></span>
-            <span class="skill-row__label">Продвинутый</span>
-          </div>
-
-        </div>
-      </div>
-
     </div>
   </section>
 
@@ -247,7 +282,12 @@
 
       <!-- Кнопка: если работ больше 11 или есть папки — см. jobs.html -->
       <div class="works__more" id="worksMoreBtn" style="display:none">
-        <a href="jobs.html" class="btn btn--outline">Все работы →</a>
+        <a href="jobs.html" class="works__more-btn">
+          Все работы
+          <svg class="works__more-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M4 10h11.5M11 4.5l5.5 5.5L11 15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
       </div>
     </div>
   </section>
@@ -257,27 +297,35 @@
   <!-- ORDER -->
   <section class="order section" id="order">
     <div class="container">
-      <h2 class="section-title reveal reveal--up">Как заказать</h2>
-      <p class="section-sub">Три шага — от идеи до готового визуала</p>
+      <h2 class="order-heading reveal reveal--up">
+        <span class="order-heading__bar" aria-hidden="true"></span>
+        <span class="order-heading__text">Как <span class="order-heading__mark">заказать</span></span>
+      </h2>
+
       <div class="order-steps">
-        <div class="order-step">
-          <span class="order-step__num">1</span>
+        <article class="order-step order-step--light reveal reveal--up">
           <h3 class="order-step__title">Напиши мне</h3>
           <p class="order-step__text">В <a href="https://t.me/d3bufff" target="_blank" rel="noopener">Telegram</a> или на почту — напишите, что вы хотите.</p>
-        </div>
-        <div class="order-step">
-          <span class="order-step__num">2</span>
+          <span class="order-step__num" aria-hidden="true">1</span>
+        </article>
+        <article class="order-step order-step--blue reveal reveal--up delay-1">
           <h3 class="order-step__title">Обсудим задачу</h3>
           <p class="order-step__text">Уточним детали, референсы, сроки. Цена зависит от сложности — скажу после брифа.</p>
-        </div>
-        <div class="order-step">
-          <span class="order-step__num">3</span>
+          <span class="order-step__num" aria-hidden="true">2</span>
+        </article>
+        <article class="order-step order-step--dark reveal reveal--up delay-2">
           <h3 class="order-step__title">Получи результат</h3>
           <p class="order-step__text">Сдаю файлы в нужном формате. При необходимости — правки по договорённости.</p>
-        </div>
+          <span class="order-step__num" aria-hidden="true">3</span>
+        </article>
       </div>
-      <div class="order-cta">
-        <a href="https://t.me/d3bufff" target="_blank" rel="noopener" class="btn">Написать в Telegram</a>
+
+      <div class="order-cta reveal reveal--up delay-2">
+        <a href="https://t.me/d3bufff" target="_blank" rel="noopener" class="order-cta__btn">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/telegram.svg" alt="" class="order-cta__icon" width="22" height="22">
+          Написать в Telegram
+        </a>
+        <p class="order-cta__note">Отвечаю в течение от 30 минут</p>
       </div>
     </div>
   </section>
@@ -286,59 +334,60 @@
 
   <!-- CONTACT -->
   <section class="contact section" id="contact">
-    <img src="images/gif.gif" alt="" class="contact__gif">
     <div class="container">
-      <h2 class="section-title reveal reveal--up">Контакты</h2>
-      <p class="section-sub">Напиши мне — и я отвечу</p>
-      <div class="contact-dashboard">
+      <h2 class="contact-heading reveal reveal--up">
+        <span class="contact-heading__bar" aria-hidden="true"></span>
+        <span class="contact-heading__text">Связь <span class="contact-heading__mark">со мной</span></span>
+      </h2>
 
-        <a href="https://t.me/d3bufff" target="_blank" class="contact-card contact-card--tg">
-          <div class="contact-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M21.198 2.433a2.242 2.242 0 0 0-1.022.215l-16.5 6.498c-1.073.422-1.068 1.81-.006 2.224l3.746 1.385 1.404 4.431c.18.568.895.782 1.368.408l2.134-1.71 3.952 2.908c.64.47 1.548.147 1.745-.614l3.025-13.5c.24-1.07-.757-1.97-1.846-1.245zM9.9 14.85l-.4 2.8-1.2-3.8 9.5-5.9-7.9 6.9z" fill="currentColor"/></svg>
-          </div>
-          <div class="contact-card__body">
-            <span class="contact-card__label">Telegram</span>
-            <span class="contact-card__value">@d3bufff</span>
-            <span class="contact-card__hint">Написать в Telegram</span>
-          </div>
-          <span class="contact-card__arrow"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
+      <div class="contact-bento">
+        <div class="contact-bento__lead reveal reveal--up">
+          <p class="contact-lead">
+            Есть идея или задача — напиши. Обсудим детали и сроки.
+          </p>
+          <a href="https://t.me/d3bufff" target="_blank" rel="noopener" class="contact-cta">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/telegram.svg" alt="" class="contact-cta__icon" width="22" height="22">
+            Написать в Telegram
+          </a>
+          <p class="contact-cta__note">Отвечаю в течение 30 минут</p>
 
-        <a href="https://discordapp.com/users/976212073790980117/" target="_blank" class="contact-card contact-card--discord">
-          <div class="contact-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" fill="currentColor"/></svg>
-          </div>
-          <div class="contact-card__body">
-            <span class="contact-card__label">Discord</span>
-            <span class="contact-card__value">Открыть профиль</span>
-            <span class="contact-card__hint">Перейти в Discord</span>
-          </div>
-          <span class="contact-card__arrow"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
-
-        <a href="https://mail.google.com/mail/?view=cm&to=dbuff009@gmail.com" target="_blank" class="contact-card contact-card--email">
-          <div class="contact-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" fill="currentColor"/></svg>
-          </div>
-          <div class="contact-card__body">
-            <span class="contact-card__label">Email</span>
-            <span class="contact-card__value">dbuff009@gmail.com</span>
-            <span class="contact-card__hint">Написать письмо</span>
-          </div>
-          <span class="contact-card__arrow"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
-
-        <div class="contact-card contact-card--status">
-          <div class="contact-card__icon">
-            <span class="status-dot"></span>
-          </div>
-          <div class="contact-card__body">
-            <span class="contact-card__label">Статус</span>
-            <span class="contact-card__value">Открыт к заказам</span>
-            <span class="contact-card__hint">Готов взяться за проект</span>
+          <div class="contact-status">
+            <span class="contact-status__dot" aria-hidden="true"></span>
+            <div class="contact-status__text">
+              <span class="contact-status__label">Статус</span>
+              <span class="contact-status__value">Открыт к заказам</span>
+            </div>
           </div>
         </div>
 
+        <div class="contact-channels">
+          <a href="https://t.me/d3bufff" target="_blank" rel="noopener" class="contact-ch contact-ch--tg reveal reveal--up delay-1">
+            <span class="contact-ch__num" aria-hidden="true">01</span>
+            <span class="contact-ch__label">Telegram</span>
+            <span class="contact-ch__value">@d3bufff</span>
+            <span class="contact-ch__go" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h11.5M11 4.5l5.5 5.5L11 15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </a>
+
+          <a href="https://discordapp.com/users/976212073790980117/" target="_blank" rel="noopener" class="contact-ch contact-ch--discord reveal reveal--up delay-2">
+            <span class="contact-ch__num" aria-hidden="true">02</span>
+            <span class="contact-ch__label">Discord</span>
+            <span class="contact-ch__value">профиль</span>
+            <span class="contact-ch__go" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h11.5M11 4.5l5.5 5.5L11 15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </a>
+
+          <a href="https://mail.google.com/mail/?view=cm&to=dbuff009@gmail.com" target="_blank" rel="noopener" class="contact-ch contact-ch--email reveal reveal--up delay-2">
+            <span class="contact-ch__num" aria-hidden="true">03</span>
+            <span class="contact-ch__label">Email</span>
+            <span class="contact-ch__value">dbuff009@gmail.com</span>
+            <span class="contact-ch__go" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h11.5M11 4.5l5.5 5.5L11 15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -405,9 +454,9 @@
   };
   </script>
   <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  <script src="lang.js?v=4"></script>
-  <script src="hero-edit.js?v=15"></script>
-  <script src="works-data.js?v=3"></script>
-  <script src="script.js?v=26"></script>
+  <script src="js/lang.js?v=8"></script>
+  <script src="js/hero-edit.js?v=16"></script>
+  <script src="js/works-data.js?v=5"></script>
+  <script src="js/script.js?v=51"></script>
 </body>
 </html>

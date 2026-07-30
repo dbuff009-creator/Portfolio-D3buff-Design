@@ -1,8 +1,0 @@
-{
-  "name": "d3buff-portfolio",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "works": "node scripts/index-works.mjs"
-  }
-}

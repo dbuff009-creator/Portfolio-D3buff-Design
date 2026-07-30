@@ -1,0 +1,87 @@
+{
+  "updatedAt": "2026-07-30T22:26:13.433Z",
+  "singles": [
+    {
+      "src": "Russian Roleplay.png",
+      "title": "Russian Roleplay.png"
+    },
+    {
+      "src": "QRposter.jpg",
+      "title": "QRposter.jpg"
+    },
+    {
+      "src": "dog_poster.jpg",
+      "title": "dog_poster.jpg"
+    },
+    {
+      "src": "meme.lua_poster.jpg",
+      "title": "meme.lua_poster.jpg"
+    },
+    {
+      "src": "meme.lua_banner.jpg",
+      "title": "meme.lua_banner.jpg"
+    },
+    {
+      "src": "poster_with_man.jpg",
+      "title": "poster_with_man.jpg"
+    },
+    {
+      "src": "SakaynoS PFP.jpg",
+      "title": "SakaynoS PFP.jpg"
+    },
+    {
+      "src": "Wb_rem.jpg",
+      "title": "Wb_rem.jpg"
+    }
+  ],
+  "groups": [
+    {
+      "folder": "avatarka",
+      "title": "Аватарка",
+      "layout": "avatarka",
+      "items": [
+        {
+          "src": "avatarka/NEW_censored.png",
+          "title": "NEW_censored.png"
+        },
+        {
+          "src": "avatarka/NEW.png",
+          "title": "NEW.png"
+        },
+        {
+          "src": "avatarka/Obzor.png",
+          "title": "Obzor.png"
+        },
+        {
+          "src": "avatarka/OLD_censored.png",
+          "title": "OLD_censored.png"
+        },
+        {
+          "src": "avatarka/OLD.png",
+          "title": "OLD.png"
+        }
+      ]
+    },
+    {
+      "folder": "wb-1",
+      "title": "wb-1",
+      "layout": "wb",
+      "tag": "wb",
+      "items": [
+        {
+          "src": "wb-1/cover.jpg",
+          "title": "cover.jpg"
+        },
+        {
+          "src": "wb-1/slide-2.png",
+          "title": "slide-2.png"
+        },
+        {
+          "src": "wb-1/slide-3.png",
+          "title": "slide-3.png"
+        }
+      ],
+      "description": "Это Тех Задание компании WildSpace"
+    }
+  ]
+}

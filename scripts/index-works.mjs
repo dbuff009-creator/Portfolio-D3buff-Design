@@ -1,5 +1,5 @@
 /**
- * Сканирует «работы/»:
+ * Сканирует images/works/:
  * - файлы в корне → отдельные работы
  * - папки → группы (колонка на странице «Все работы»)
  */
@@ -10,9 +10,9 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
-const WORKS_DIR = path.join(ROOT, 'работы');
-const MANIFEST = path.join(ROOT, 'works.json');
-const WORKS_JS = path.join(ROOT, 'works-data.js');
+const WORKS_DIR = path.join(ROOT, 'images', 'works');
+const MANIFEST = path.join(ROOT, 'data', 'works.json');
+const WORKS_JS = path.join(ROOT, 'js', 'works-data.js');
 
 const IMAGE_EXT = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp']);
 
@@ -59,7 +59,7 @@ async function main() {
   try {
     entries = await fs.readdir(WORKS_DIR, { withFileTypes: true });
   } catch {
-    console.error('Папка «работы/» не найдена');
+    console.error('Папка images/works/ не найдена');
     process.exit(1);
   }
 
@@ -78,33 +78,39 @@ async function main() {
     } else if (isImage(ent.name)) {
       const full = path.join(WORKS_DIR, ent.name);
       const stat = await fs.stat(full);
-      singles.push({ src: ent.name, title: ent.name, mtime: stat.mtimeMs });
+      singles.push({
+        src: ent.name,
+        title: ent.name,
+        mtime: stat.mtimeMs
+      });
     }
   }
 
-  // Новые файлы в корне — первыми (на главной показываются первые 13)
   singles.sort((a, b) => b.mtime - a.mtime);
-  singles.forEach(s => delete s.mtime);
+  singles.forEach((s) => { delete s.mtime; });
   groups.sort((a, b) => a.folder.localeCompare(b.folder, 'ru'));
 
-  const manifest = { updatedAt: new Date().toISOString(), singles, groups };
+  const payload = {
+    updatedAt: new Date().toISOString(),
+    singles,
+    groups
+  };
 
-  await fs.writeFile(MANIFEST, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
+  await fs.mkdir(path.dirname(MANIFEST), { recursive: true });
+  await fs.writeFile(MANIFEST, JSON.stringify(payload, null, 2) + '\n', 'utf8');
   await fs.writeFile(
     WORKS_JS,
-    '// Автоматически: обновить-работы.bat\nwindow.WORKS_DATA = ' +
-      JSON.stringify(manifest, null, 2) +
+    '// Автоматически: update-works.bat\nwindow.WORKS_DATA = ' +
+      JSON.stringify(payload) +
       ';\n',
     'utf8'
   );
 
-  const inGroups = groups.reduce((n, g) => n + g.items.length, 0);
-  console.log(`\nГотово → works.json + works-data.js`);
-  console.log(`  отдельных: ${singles.length}`);
-  console.log(`  групп (папок): ${groups.length} (${inGroups} файлов)\n`);
+  console.log(`singles: ${singles.length}, groups: ${groups.length}`);
+  console.log(`\nГотово → data/works.json + js/works-data.js`);
 }
 
-main().catch(err => {
-  console.error('Ошибка:', err.message);
+main().catch((err) => {
+  console.error(err);
   process.exit(1);
 });
