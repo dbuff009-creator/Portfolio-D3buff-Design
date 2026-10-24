@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-24T17:15:29.975Z",
+  "updatedAt": "2026-10-24T17:18:08.083Z",
   "singles": [
     {
       "src": "banner krytoi_2.png",
@@ -43,33 +43,6 @@
     }
   ],
   "groups": [
-    {
-      "folder": "avatarka",
-      "title": "Аватарка",
-      "layout": "avatarka",
-      "items": [
-        {
-          "src": "avatarka/NEW_censored.png",
-          "title": "NEW_censored.png"
-        },
-        {
-          "src": "avatarka/NEW.png",
-          "title": "NEW.png"
-        },
-        {
-          "src": "avatarka/Obzor.png",
-          "title": "Obzor.png"
-        },
-        {
-          "src": "avatarka/OLD_censored.png",
-          "title": "OLD_censored.png"
-        },
-        {
-          "src": "avatarka/OLD.png",
-          "title": "OLD.png"
-        }
-      ]
-    },
     {
       "folder": "wb-1",
       "title": "wb-1",
